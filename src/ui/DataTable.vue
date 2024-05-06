@@ -131,6 +131,23 @@ watch(() => props.pageSize, () => {
                             <small class="fw-bold text-muted">Maitre ouvrage : {{ item.pre_project.maitre_ouvrage
                                 }}</small>
                         </td>
+
+                        <td v-if="header.isComplex && header.type === 'client'" class="text-primary"
+                            :class="index == 0 ? 'text-start' : 'text-center'">
+                            <div class="d-flex align-items-center">
+                                <div class=" me-2">
+                                    <img src="@/assets/img/avatars/10.png" alt="Avatar" class="rounded-circle"
+                                        height="45px">
+                                </div>
+                                <div>
+                                    <router-link to="">
+                                        <h6 class="mb-1 fw-bold">{{ item.raison_social }}</h6>
+                                    </router-link>
+                                    <small class="fw-bold text-muted">RC : {{ item.num_rc }}</small>
+                                </div>
+                            </div>
+
+                        </td>
                         <td v-if="header.isComplex && header.type === 'caution'" class="text-primary"
                             :class="index == 0 ? 'text-start' : 'text-center'">
                             <router-link to="">
@@ -163,6 +180,15 @@ watch(() => props.pageSize, () => {
                                     {{ formater.date(item[header.value]) }}
                                 </span>
                             </small>
+                            <small v-if="header.type === 'text'">
+                                {{ item[header.value] }}
+                            </small>
+                            <small v-if="header.type === 'phone'">
+                                {{ formater.phoneNumber(item[header.value]) }}
+                            </small>
+                            <span v-if="header.type === 'test'">
+                                {{ item }}
+                            </span>
 
                         </td>
                         <td class="text-center" v-if="header.isComplex && header.type === 'date_echantillion'">
@@ -175,9 +201,8 @@ watch(() => props.pageSize, () => {
                                 class="ti ti-square-rounded-check-filled text-success f-26"></i>
                             <i v-else class="ti ti-square-rounded-x-filled text-danger f-26"></i>
                         </td>
-                        <span v-if="header.type === 'test'">
-                            {{ item }}
-                        </span>
+
+
 
                     </template>
 

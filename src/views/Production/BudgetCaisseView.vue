@@ -73,6 +73,43 @@ onMounted(async () => {
                             <small class="text-muted">Details du budget de caisse</small>
                         </div>
                     </div>
+                    <div class="border-top border-bottom">
+                        <div class="row mb-4 mt-4 ms-2 me-2">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <input v-model="searchQuery" type="search" class="form-control w-240 me-2"
+                                        placeholder="Rechercher..." @input="filter" />
+                                    <div class="d-flex align-items-center ms-2">
+                                        <label for="start">De</label>
+                                        <input v-model="startQuery" type="date" id="start"
+                                            class="form-control ms-2 me-2" @change="filter" />
+                                    </div>
+                                    <div class="d-flex align-items-center ms-0">
+                                        <label for="end">à</label>
+                                        <input v-model="endQuery" type="date" id="end" class="form-control ms-2 me-2"
+                                            @change="filter" />
+                                    </div>
+                                    <div class="d-flex align-items-center ms-0">
+                                        <select v-model="statusQuery" class="form-select ms-2 me-2 w-180"
+                                            @change="filter">
+                                            <option value="-">Tout</option>
+                                            <option value="0">Recupérée</option>
+                                            <option value="1">Non recupérée</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center ms-auto">
+                                        <select v-model="itemPerPage" name="" class="form-select ms-2 me-2 w-120">
+                                            <option value="15">15</option>
+                                            <option value="30">30</option>
+                                            <option value="45">45</option>
+                                            <option value="60">60</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <ul class="list-unstyled mb-0">
                             <li v-for="item in caisseList" :key="item" class="d-flex mb-4 pb-1 align-items-center">
@@ -83,16 +120,35 @@ onMounted(async () => {
                                 <div class="row w-100 align-items-center">
                                     <div class="col-sm-8 col-lg-12 col-xxl-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
                                         <p class="mb-0 fw-medium">
-                                            {{ item.designation }}
+                                            {{ item.designation }} - <strong>{{ formater.number(item.montant)
+                                                }}</strong> <small>MAD</small>
                                         </p>
                                         <small class="mb-0">
-                                            Montant : {{ formater.number(item.montant) }} MAD
+                                            Projet : {{ item.pre_project.project_code }}
                                         </small>
                                     </div>
                                     <div
                                         class="col-sm-4 col-lg-12 col-xxl-4 d-flex justify-content-sm-end justify-content-md-start justify-content-xxl-end">
+                                        <div class="me-4">
+                                            <small>Créé le : {{ formater.dateTime(item.created_at) }}</small>
+                                        </div>
                                         <div class="badge bg-label-secondary">
                                             {{ item.status }}
+                                        </div>
+                                        <div class="ms-2">
+                                            <div class="dropdown">
+                                                <button class="btn p-0" type="button" id="actionMore"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                    <i class="ti ti-dots-vertical ti-sm text-dark"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-end"
+                                                    aria-labelledby="actionMore">
+                                                    <a class="dropdown-item" href="javascript:void(0);">Download</a>
+                                                    <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                                                    <a class="dropdown-item" href="javascript:void(0);">Share</a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

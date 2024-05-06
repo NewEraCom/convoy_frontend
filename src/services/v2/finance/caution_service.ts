@@ -1,7 +1,7 @@
 import { api } from '@/utils';
 import { useFinanceStore } from '@/store/v2';
 
-const url = 'v2/cautions/';
+const url = '/cautions/';
 
 const cautionsService = {
     async getCautionsList() {

@@ -3,7 +3,7 @@ import { CardTwo } from '@/ui';
 import { onMounted, ref, computed, watch } from 'vue';
 import { clientService } from '@/services';
 import { useFinanceStore } from '@/store/v2';
-import { formater, helpers } from '@/utils';
+import { ClientsTable } from './components';
 
 
 const financeStore = useFinanceStore();
@@ -18,7 +18,7 @@ onMounted(async () => {
 
 watch(error, (newValue) => {
     if (newValue) {
-        console.log('Error:', newValue);
+        //console.log('Error:', newValue);
         // redirect to error page
     }
 });
@@ -50,6 +50,7 @@ watch(error, (newValue) => {
             </div>
         </div>
 
+
         <div class="row g-3 mt-2">
             <div class="col-12 col-xl-12 col-md-12">
                 <div class="card card-border-shadow-primary h-100">
@@ -63,52 +64,7 @@ watch(error, (newValue) => {
                             Nouveau client
                         </button>
                     </div>
-                    <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-
-                        <div class="d-flex align-items-center">
-                            <select name="" id="" class="form-select w-160 me-2">
-                                <option value="Tout">Tout</option>
-                                <option value="En attente">En attente</option>
-                                <option value="En soumission">En soumission</option>
-                                <option value="En cours">En cours</option>
-                                <option value="Terminé">Terminé</option>
-                            </select>
-
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <select name="" id="" class="form-select w-80 me-2">
-                                <option value="5">5</option>
-                            </select>
-                            <input type="text" class="form-control w-240" placeholder="Rechercher...">
-                        </div>
-                    </div>
-                    <div class="card-body mt-4">
-                        <div class="row g-3">
-                            <div class="col-sm-6 col-lg-4" v-for="client in  clients " :key="client.id">
-                                <div class="card shadow-none border">
-                                    <div class="card-body d-flex p-2">
-                                        <img class="img-fluid scaleX-n1-rtl"
-                                            src="../../assets/img/illustrations/boy-app-academy.png"
-                                            alt="boy illustration" width="120px" style="object-fit: cover;">
-                                        <div class="ms-3" style="width: 100%;">
-                                            <h5>{{ client.raison_social }}</h5>
-                                            <p class="f-13 mb-1">Adresse : {{ client.adresse }}</p>
-                                            <p class="f-13 mb-1">Ville : {{ client.ville }}</p>
-                                            <div class="d-flex mt-3">
-                                                <span :class="helpers.returnBadge(client.status)[0]">
-                                                    {{ helpers.returnBadge(client.status)[1] }}
-                                                </span>
-                                                <button class="btn btn-sm btn-primary ms-auto">
-                                                    <i class="ti ti-eye"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <ClientsTable :clients="clients" v-if="clients" />
                 </div>
             </div>
         </div>

@@ -21,10 +21,10 @@ export const useFinanceStore = defineStore('FinanceStore', {
         setCautionsList(data) {
             this.cautionsList = data;
             this.cautionsStats = {
-                caution_provisoir_not_recover: data.filter(item => item.caution_type == 'provisoire' && item.status == 0).reduce((acc, item) => acc + item.amount, 0),
-                caution_provisoir_recover: data.filter(item => item.caution_type == 'provisoire' && item.status == 1).reduce((acc, item) => acc + item.amount, 0),
-                caution_definitive_not_recover: data.filter(item => item.caution_type == 'definitive' && item.status == 0).reduce((acc, item) => acc + item.amount, 0),
-                caution_definitive_recover: data.filter(item => item.caution_type == 'definitive' && item.status == 1).reduce((acc, item) => acc + item.amount, 0),
+                caution_provisoir_not_recover: data.filter(item => item.caution_type == 'provisoire' && item.status == 'approved').reduce((acc, item) => acc + item.amount, 0),
+                caution_provisoir_recover: data.filter(item => item.caution_type == 'provisoire' && item.status == 'recovered').reduce((acc, item) => acc + item.amount, 0),
+                caution_definitive_not_recover: data.filter(item => item.caution_type == 'definitive' && item.status == 'approved').reduce((acc, item) => acc + item.amount, 0),
+                caution_definitive_recover: data.filter(item => item.caution_type == 'definitive' && item.status == 'recovered').reduce((acc, item) => acc + item.amount, 0),
             };
         },
         setError() {
