@@ -6,14 +6,31 @@ import '/src/assets/js/pages-auth.js';
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { authService } from '@/services';
+import router from '../../router';
+
 
 const isLoading = ref(false);
 const isError = ref([false, '']);
 const formData = ref({
-	email: ''
+  email: ''
 });
 
-const submit = async () => {};
+const submit = async () => {
+  isLoading.value = true;
+
+  authService.forgetPassword(formData.value.email)
+    .then(() => {
+      isError.value = [false, ''];
+      isLoading.value = false;
+      router.push({ name: 'RecoverAccount' });
+    })
+    .catch((error) => {
+      isError.value = [true, 'Une erreur est survenue, veuillez réessayer plus tard.'];
+      isLoading.value = false;
+    });
+
+};
 </script>
 
 <template>
@@ -35,25 +52,11 @@ const submit = async () => {};
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">Adresse e-mail</label>
-                <input
-                  id="email"
-                  v-model="formData.email"
-                  type="text"
-                  class="form-control"
-                  name="email"
-                  placeholder="Entrez votre adresse e-mail"
-                  autofocus
-                  :disabled="isLoading"
-                  required
-                />
+                <input id="email" v-model="formData.email" type="text" class="form-control" name="email"
+                  placeholder="Entrez votre adresse e-mail" autofocus :disabled="isLoading" required />
               </div>
               <button class="btn btn-primary d-grid w-100" type="submit" :disabled="isLoading">
-                <span
-                  v-if="isLoading"
-                  class="spinner-border spinner-border-sm"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
+                <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span v-else>Récupérer mon mot de passe</span>
               </button>
             </form>

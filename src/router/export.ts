@@ -1,9 +1,6 @@
-export * from './shared_routes';
-export * from './human_ressource_routes';
-export * from './project_manager_routes';
-export * from './landing_routes';
 export * from './auth_routes';
 export * from './finance_routes';
-export * from './sales_routes';
+export * from './production_routes';
 export * from './logistics_routes';
+export * from './shared_routes';
 

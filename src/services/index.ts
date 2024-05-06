@@ -7,6 +7,10 @@ import pmService from './project_manager_service';
 import salesService from './sales_service';
 import logisticsService from './logistics_service';
 
+
+export * from './v2';
+
+
 export {
     authService,
     rhService,

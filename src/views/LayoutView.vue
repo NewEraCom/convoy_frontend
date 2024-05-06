@@ -29,7 +29,7 @@ import { TheSideBar, TheTopBar, LogoutModal } from '@/ui';
 }
 
 .layout-page {
-    margin-left: 280px;
+    margin-left: 250px;
     flex-grow: 1;
     padding: 20px;
     background: #f1f1f1;

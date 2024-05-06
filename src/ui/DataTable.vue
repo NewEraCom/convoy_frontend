@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import { formater, helpers } from '@/utils';
 
-const role = localStorage.getItem('role');
+//const role = localStorage.getItem('role');
 type Item = {
     [key: string]: any; // This allows any number of properties with any type
 }
@@ -17,7 +17,7 @@ type ActionButton = {
 
 const props = defineProps<{
     items: Item[],
-    headers: Array<{ text: string, value: string, isComplex?: boolean, type?: string }>,
+    headers: Array<{ text: string, value?: string, isComplex?: boolean, type?: string }>,
     buttonType?: string,
     pageSize: number,
     disabled?: string,
@@ -94,11 +94,6 @@ watch(() => props.pageSize, () => {
     currentPage.value = 1;
 });
 
-const getFileUrl = (attachment) => {
-    console.log(attachment);
-
-    return helpers.baseUrl() + `uploads/${attachment}`;
-};
 </script>
 
 <template>
@@ -117,229 +112,58 @@ const getFileUrl = (attachment) => {
             <tbody v-if="paginatedItems.length > 0">
                 <tr v-for="item in paginatedItems" :key="item.id">
                     <template v-for="(header, index) in headers" :key="header.value">
-                        <td v-if="header.isComplex && header.type === 'employee'"
-                            :class="index == 0 ? 'text-start' : 'text-center'">
-                            <router-link :to="{ name: 'ProfileEmployee', params: { id: item.id } }">
-                                <h6 class="mb-1 fw-bold text-primary">{{ item.first_name + ' ' + item.last_name }}</h6>
-                            </router-link>
-                            <small class="fw-bold text-muted">Matricule : {{ item.matricule }}</small>
-                        </td>
-                        <td v-if="header.isComplex && header.type === 'fullname'"
-                            :class="index == 0 ? 'text-start' : 'text-center'">
-                            <router-link :to="{ name: 'StagiaireProfile', params: { id: item.id } }">
-                                <h6 class="mb-1 fw-bold text-primary">{{ item.prenom + ' ' + item.nom }}</h6>
-                            </router-link>
-                            <small class="fw-bold text-muted">Email : {{ item.email }}</small>
-                        </td>
-                        <td v-if="header.isComplex && header.type === 'workers'"
-                            :class="index == 0 ? 'text-start' : 'text-center'">
-                            <router-link :to="{ name: 'WorkerEmployee', params: { id: item.id } }">
-                                <h6 class="mb-1 fw-bold text-primary">{{ item.first_name + ' ' + item.last_name }}</h6>
-                            </router-link>
-                            <small class="fw-bold text-muted">Matricule : {{ item.matricule }}</small>
-                        </td>
-                        <td v-if="header.isComplex && header.type === 'project'"
-                            :class="index == 0 ? 'text-start' : 'text-center'">
-                            <!-- <h6 class="mb-1 fw-bold">{{ item.name }}</h6> -->
-                            <small class="fw-bold text-muted">Code : {{ item.project.code }}</small>
-                        </td>
-                        <td v-if="header.isComplex && header.type === 'preProjects'">
-                            <router-link :to="{
-                        name: 'PreProjectDetail',
-                        params: { id: item.id }
-                    }">
-                                <h6 class="mb-1 text-primary fw-bold">{{ item.maitre_ouvrage }}</h6>
-                            </router-link>
-                            <small class="fw-bold text-muted">
-                                Code : {{ helpers.limitedClientName(item.project_code) }}
-                                <i v-if="item.type_project != 'simple' &&
-                        item.lots.length == 0
-                        " class="ti ti-alert-circle-filled text-danger" />
-                            </small>
-                        </td>
                         <td v-if="header.isComplex && header.type === 'preproject'"
                             :class="index == 0 ? 'text-start' : 'text-center'">
-                            <h6 class="mb-1 fw-bold">{{ item.pre_project.maitre_ouvrage }}</h6>
-                            <small class="fw-bold text-muted">Code : {{ item.pre_project.project_code }}</small>
-                        </td>
-                        <td v-if="header.isComplex && header.type === 'leave'"
-                            :class="index == 0 ? 'text-start' : 'text-center'">
-                            <div v-if="role == helpers.roles.RH">
-
-                                <router-link :to="{ name: 'ProfileEmployee', params: { id: item.employe.id } }">
-                                    <h6 class="mb-1 fw-bold text-primary">{{ item.employe.first_name + ' ' +
-                        item.employe.last_name
-                                        }}</h6>
-                                </router-link>
-                                <small class="fw-bold text-muted">Matricule : {{ item.employe.matricule }}</small>
-                            </div>
-                            <div v-else>
-                                <h6 class="mb-1 fw-bold text-primary">{{ item.employe.first_name + ' ' +
-                        item.employe.last_name
-                                    }}</h6>
-                                <small class="fw-bold text-muted">Matricule : {{ item.employe.matricule }}</small>
-
-                            </div>
-                        </td>
-                        <td v-if="header.isComplex && header.type === 'SousTraitant'"
-                            :class="index == 0 ? 'text-start' : 'text-center'">
-                            <router-link :to="{ name: 'ProfileSoustraitant', params: { id: item.id } }">
-                                <h6 class="mb-1 fw-bold text-primary">{{ item.raison_social
-                                    }}</h6>
+                            <router-link :to="{ name: 'DetailsPreProject', params: { id: item.id } }">
+                                <h6 class="mb-1 fw-bold text-primary">
+                                    {{ item.n_offre }}
+                                    <i class="ti ti-bookmark-filled text-danger"
+                                        v-if="item.type_project == 'special'"></i>
+                                </h6>
                             </router-link>
-
+                            <small class="fw-bold text-muted">Maitre ouvrage : {{ item.maitre_ouvrage }}</small>
                         </td>
-                        <td v-if="header.isComplex && header.type === 'recrute'"
+                        <td v-if="header.isComplex && header.type === 'project'" class="text-primary"
                             :class="index == 0 ? 'text-start' : 'text-center'">
-
-                            <h6 class="mb-1 fw-bold">{{ item.user.employee.first_name + ' '
-                        + item.user.employee.last_name }}</h6>
+                            <router-link to="">
+                                <h6 class="mb-1 fw-bold">{{ item.code }}</h6>
+                            </router-link>
+                            <small class="fw-bold text-muted">Maitre ouvrage : {{ item.pre_project.maitre_ouvrage
+                                }}</small>
+                        </td>
+                        <td v-if="header.isComplex && header.type === 'caution'" class="text-primary"
+                            :class="index == 0 ? 'text-start' : 'text-center'">
+                            <router-link to="">
+                                <h6 class="mb-1 fw-bold">{{ item.pre_project.project_code }}</h6>
+                            </router-link>
+                            <small class="fw-bold text-muted">Maitre ouvrage : {{ item.pre_project.maitre_ouvrage
+                                }}</small>
                         </td>
                         <td v-if="!header.isComplex" :class="index == 0 ? 'text-start' : 'text-center'">
-                            <span v-if="header.type == 'badge'">
+                            <small v-if="header.type == 'badge'">
                                 <small class="fw-bold" :class="helpers.returnBadge(String(item[header.value]))[0]">{{
                         helpers.returnBadge(String(item[header.value]))[1] }}
                                 </small>
-                            </span>
+                            </small>
+                            <small v-if="header.type == 'client'">
+                                {{ item.client.raison_social }}
+                            </small>
+                            <small v-if="header.type == 'projectManager'">
+                                {{ item.pre_project.project_manager.employee.first_name }}
+                                {{ item.pre_project.project_manager.employee.last_name }}
+                            </small>
+                            <small class="fw-bold" v-if="header.type === 'currency'">
+                                {{ formater.number(item[header.value]) }} MAD
+                            </small>
                             <small v-else>
                                 <span v-if="header.type === 'datetime'">
                                     {{ formater.dateTime(item[header.value]) }}
                                 </span>
-                                <span v-if="header.type === 'gsm' && header.value === 'date_affectation'">
-                                    {{ item.pivot.date_debut }}
-                                </span>
-                                <span v-if="header.type === 'gsm' && header.value === 'date_retour'">
-                                    {{ item.pivot.date_fin ?? 'N/A' }}
-                                </span>
                                 <span v-if="header.type === 'date'">
                                     {{ formater.date(item[header.value]) }}
                                 </span>
-                                <span v-if="header.type === 'text'">
-                                    {{ formater.limitText(String(item[header.value]), 40) }}
-                                </span>
-                                <span v-if="header.type === 'jours'">
-                                    {{ formater.limitText(String(item[header.value]), 40) }} Jrs
-                                </span>
-                                <span v-if="header.type === 'item'">
-                                    {{ item.item.designation }}
-                                </span>
-                                <span v-if="header.type === 'project'">
-                                    {{ item.project.code }}
-                                </span>
-                                <span v-if="header.type === 'preproject'">
-                                    {{ item.preproject.project_code }}
-                                </span>
-                                <span v-if="header.type === 'currency'">
-                                    {{ formater.number(item[header.value]) }} MAD
-                                </span>
-                                <span v-if="header.type === 'km'">
-                                    {{ formater.number(item[header.value]) }} KM
-                                </span>
-                                <span v-if="header.type === 'number'">
-                                    {{ formater.number(item[header.value]) }}
-                                </span>
-                                <span v-if="header.type === 'days'">
-                                    {{ item[header.value] > 1 ? item[header.value] + ' Jours' :
-                        item[header.value] + 'Jour'
-                                    }}
-                                </span>
-                                <span v-if="header.type === 'time'">
-                                    {{ formater.time(String(item[header.value])) }}
-                                </span>
-                                <span v-if="header.type === 'created_by'">
-                                    {{ item.created_by.employee.first_name + ' ' + item.created_by.employee.last_name }}
-                                </span>
-                                <span v-if="header.type === 'achat'">
-                                    N° {{ item.achat.n_order }}
-                                </span>
-                                <span v-if="header.type === 'bdc'">
-                                    N° {{ item.bon_commande.num }}
-                                </span>
-                                <span v-if="header.type === 'phone'">
-                                    {{ formater.phoneNumber(item[header.value]) }}
-                                </span>
-                                <span v-if="header.type === 'facture'">
-                                    <small v-if="item[header.value] == '-' || item[header.value] != null">Aucun
-                                        facture
-                                    </small>
-                                    <button v-else class="btn btn-label-primary btn-sm">
-                                        <i class="ti ti-download me-2"></i> Télécharger la facture
-                                    </button>
-                                </span>
-                                <span v-if="header.type === 'attachement'">
-                                    <small v-if="item[header.value] == '-'">Aucun Attachement</small>
-                                    <a v-else class="btn btn-label-primary btn-sm" target="_blank"
-                                        :href="getFileUrl(item[header.value])">
-                                        <i class="ti ti-download me-2"></i> Télécharger l'attachement
-                                    </a>
-                                </span>
-                                <span v-if="header.type === 'stock'">
-                                    <span :class="helpers.returnStockAlert(item[header.value], item.alert)[0]">
-                                        {{ helpers.returnStockAlert(item[header.value], item.alert)[1] }}
-                                    </span>
-                                </span>
-                                <span v-if="header.type === 'soustraitant'">
-                                    {{ item[header.value].raison_social }}
-                                </span>
-
-                                <span v-if="header.type === 'soustraitant_facture'">
-                                    {{ item.bon_commande.soustraitant.raison_social }}
-                                </span>
-                                <span v-if="header.type === 'workingHour'">
-                                    <span class="fw-bold"
-                                        :class="helpers.calculateDifference(item, item.employe.working_hours)[2]">
-                                        {{ helpers.calculateDifference(item, item.employe.working_hours)[0] }}
-                                    </span>
-                                </span>
-                                <span v-if="header.type === 'workingHourCustom'">
-                                    <span class="fw-bold"
-                                        :class="helpers.calculateDifference(item, item.employe.working_hours)[2]">
-                                        {{ helpers.calculateDifference(item, item.employe.working_hours)[0] }}
-                                    </span>
-                                </span>
-                                <span v-if="header.type === 'caisse'">
-                                    <span v-if="item.operation == 'entree'">
-                                        <h6 class="mb-1 fw-bold">{{ item.emetteur }}</h6>
-                                        <small>Date de l'opération : {{ formater.date(item.created_at) }}</small>
-                                    </span>
-                                    <span v-else>
-                                        <h6 class="mb-1 fw-bold">{{ item.recepteur.first_name + ' ' +
-                        item.recepteur.last_name }}</h6>
-                                        <small>Matricule : NEC-{{ item.recepteur.matricule }}</small>
-                                    </span>
-                                </span>
-                                <span v-if="header.type == 'project_manager'">
-                                    {{ item.preproject.project_manager.employee.first_name + ' ' +
-                        item.preproject.project_manager.employee.last_name
-                                    }}
-                                </span>
-                                <span v-if="header.type == 'client'">
-                                    <router-link to="/">
-                                        <h6 class="mb-1 fw-bold text-primary">{{ formater.limitText(item.raison_social,
-                        30)
-                                            }}
-                                        </h6>
-                                    </router-link>
-                                    <small class="fw-bold text-muted">Numéro RC : {{ item.num_rc ?? 'N/A' }}</small>
-                                </span>
-
-                                <span v-if="header.type == 'percentage'">
-                                    {{ formater.number((item.suivie / item.qte) * 100) }} %
-                                </span>
-                                <span v-if="header.type === 'test'">
-                                    {{ item }}
-                                </span>
                             </small>
-                        </td>
-                        <td v-if="header.isComplex && header.type === 'tier'"
-                            :class="index == 0 ? 'text-start' : 'text-center'">
-                            <!-- <h6 class="mb-1 fw-bold">{{ item.name }}</h6> -->
-                            <small class="fw-bold text-muted">Code : {{ item.tier.commercial_name }}</small>
-                        </td>
-                        <td v-if="header.isComplex && header.type === 'carnet'"
-                            :class="index == 0 ? 'text-start' : 'text-center'">
-                            <h6 class="mb-1 fw-bold">{{ item.carnet.numero }}</h6>
-                            <small class="fw-bold text-muted">RIB : {{ item.carnet.compte_bancaire.rib }}</small>
+
                         </td>
                         <td class="text-center" v-if="header.isComplex && header.type === 'date_echantillion'">
                             <i v-if="item.date_echantillion != null"
@@ -351,6 +175,10 @@ const getFileUrl = (attachment) => {
                                 class="ti ti-square-rounded-check-filled text-success f-26"></i>
                             <i v-else class="ti ti-square-rounded-x-filled text-danger f-26"></i>
                         </td>
+                        <span v-if="header.type === 'test'">
+                            {{ item }}
+                        </span>
+
                     </template>
 
                     <td v-if="buttonType == 'simple'" class="text-center">
@@ -388,7 +216,7 @@ const getFileUrl = (attachment) => {
                 </tr>
             </tbody>
         </table>
-        <nav aria-label="Page navigation" class="mt-4">
+        <nav aria-label="Page navigation" class="mt-4 ms-3 align-items-center d-flex justify-content-center">
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <a class="page-link" href="#" @click.prevent="changePage(1)">

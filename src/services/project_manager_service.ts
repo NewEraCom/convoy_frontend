@@ -435,8 +435,7 @@ async function validate(req: any) {
 
     const response = await api().post('preprojects/validate', req);
     if (response.status == 200) {
-      PMStore.pushPreProjects(response.data);
-      PMStore.setPreProject(response.data.preProject);
+      PMStore.setPreProjectDetail(response.data.preProject);
     }
     return response.status;
   } catch (error) {

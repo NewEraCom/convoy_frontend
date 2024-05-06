@@ -26,7 +26,15 @@ const submit = async () => {
   isLoading.value = true;
   isError.value = [false, ''];
   try {
-    await authService.login(formData.value);
+    const res = await authService.login(formData.value);
+    if (res) {
+      isError.value = [false, ''];
+      isLoading.value = false;
+    }
+    else {
+      isError.value = [true, 'Une erreur est survenue, veuillez réessayer plus tard.'];
+      isLoading.value = false;
+    }
   } catch (error) {
     console.error(error);
     isError.value = [true, error?.message || 'Nous rencontrons actuellement des problèmes techniques. Réessayez plus tard ou contactez notre support si le problème persiste. Merci de votre patience.'];

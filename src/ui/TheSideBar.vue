@@ -129,6 +129,7 @@ onMounted(() => {
     background-color: #fdfdfd;
     color: #191919 !important;
     border-radius: 8px;
+    width: 100%;
 }
 
 .active>.link {
@@ -142,7 +143,7 @@ onMounted(() => {
     top: 0;
     left: 0;
     height: 100%;
-    width: 290px;
+    width: 260px;
     background: #2a3042;
     padding: 15px 10px;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
@@ -226,7 +227,7 @@ onMounted(() => {
 .menu_title .title {
     margin-left: 15px;
     color: #fdfdfd;
-    font-size: 16px;
+    font-size: 13px;
     transition: all 0.3s ease;
 }
 
@@ -255,6 +256,7 @@ onMounted(() => {
 
 .item {
     font-weight: 500;
+    font-size: 13px;
     list-style: none;
 }
 
@@ -278,7 +280,7 @@ onMounted(() => {
     height: 50px;
     min-width: 55px;
     display: flex;
-    font-size: 22px;
+    font-size: 16px;
     align-items: center;
     justify-content: center;
     border-radius: 4px;

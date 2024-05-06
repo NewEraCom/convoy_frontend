@@ -21,6 +21,12 @@ onMounted(() => {
         <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
           <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
             data-bs-auto-close="outside" aria-expanded="false">
+            <i class="ti ti-calendar ti-md"></i>
+          </a>
+        </li>
+        <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
+          <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
+            data-bs-auto-close="outside" aria-expanded="false">
             <i class="ti ti-bell ti-md"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end py-0">
@@ -35,9 +41,8 @@ onMounted(() => {
         </li>
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
           <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-            <div class="avatar avatar-online">
-              <img :src="env + 'assets/img/' + user.profile_picture" class="rounded-circle"
-                style="object-fit: fill; height: 100%" />
+            <div class="avatar avatar-online border rounded-circle">
+              <img :src="env + user.profile_picture" class="rounded-circle" style="object-fit: fill; height: 100%" />
             </div>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
@@ -53,7 +58,7 @@ onMounted(() => {
                   <div class="flex-grow-1">
                     <span class="fw-medium d-block">{{
     user.employee.first_name + ' ' + user.employee.last_name
-  }}</span>
+                      }}</span>
                     <small class="text-muted">
                       {{ user.employee.poste }}
                     </small>
@@ -65,7 +70,7 @@ onMounted(() => {
               <div class="dropdown-divider"></div>
             </li>
             <li>
-              <router-link to="/profile" class="dropdown-item">
+              <router-link to="/shared/profile" class="dropdown-item">
                 <i class="ti ti-user-check me-2 ti-sm"></i>
                 <span class="align-middle fw-bold">Profil</span>
               </router-link>

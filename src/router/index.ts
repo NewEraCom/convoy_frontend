@@ -1,12 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import { helpers } from '@/utils';
-import { landingRoutes, authRoutes, hrRoutes, projectManagerRoutes, sharedRoutes, financeRoutes, salesRoutes, logisticsRoutes } from './export';
+import { authRoutes, productionRoutes, logisticsRoutes, sharedRoutes, financeRoutes } from './export';
 
 const router = createRouter({
     history: createWebHistory('/erp'),
     routes: [
-        ...landingRoutes,
         ...authRoutes,
         {
             path: '/layouts',
@@ -16,12 +15,10 @@ const router = createRouter({
                 requiresAuth: true
             },
             children: [
-                ...sharedRoutes,
-                ...hrRoutes,
-                ...projectManagerRoutes,
+                ...productionRoutes,
                 ...financeRoutes,
-                ...salesRoutes,
                 ...logisticsRoutes,
+                ...sharedRoutes,
             ]
         },
     ]

@@ -2,48 +2,28 @@ const sharedMenu = [
     {
         id: 12,
         name: 'Calendrier',
-        route: '/calendar',
+        route: '/shared/calendar',
         icon: 'ti ti-calendar',
         path: 'Calendar'
     },
     {
         id: 13,
         name: 'Salle de réunion',
-        route: '/meeting-room',
+        route: '/shared/meeting-room',
         icon: 'ti ti-calendar-time',
         path: 'MeetingRoom'
     },
     {
         id: 14,
         name: 'Coursier',
-        route: '/company-courier',
+        route: '/shared/coursier',
         icon: 'ti ti-car',
-        path: 'CompanyCourier'
+        path: 'Coursier'
     }
 ];
 
 const sharedMenu2 = [
-    {
-        id: 9,
-        name: 'Demande de congé',
-        route: '/leave-request',
-        icon: 'ti ti-plane-inflight',
-        path: 'LeaveRequest'
-    },
-    {
-        id: 10,
-        name: 'Demande RH',
-        route: '/rh-request',
-        icon: 'ti ti-file-export',
-        path: 'RhRequest'
-    },
-    {
-        id: 11,
-        name: 'Demande de recrutement',
-        route: '/recruitment-request',
-        icon: 'ti ti-search',
-        path: 'RecruitmentRequest'
-    },
+
 ];
 
 
@@ -734,49 +714,90 @@ const BDMenu = [
     {
         id: 1,
         name: 'Dashboard',
-        route: '/dashboard-bdm',
+        route: '/bdm/dashboard',
         icon: 'ti ti-smart-home',
-        path: 'DashboardPM'
-    },
-    {
-        id: 2,
-        name: 'Projets',
-        route: '/projects',
-        icon: 'ti ti-package',
-        path: 'Projects'
+        path: 'DashboardBDM'
     },
     {
         id: 2,
         name: 'Avant Projets',
-        route: '/pre-project',
-        icon: 'ti ti-briefcase',
-        path: 'PreProject'
+        route: '/pre-projects',
+        icon: 'ti ti-bolt',
+        path: 'PreProjectsBDM'
     },
     {
         id: 3,
-        name: 'Caution',
-        route: '/fn/Caution',
-        icon: 'ti ti-coins',
-        path: 'FnCaution'
+        name: 'Projets',
+        route: '/bdm/projects',
+        icon: 'ti ti-package',
+        path: 'ProjectsBDM'
     },
-
+    {
+        id: 4,
+        name: 'Cautions',
+        route: '/finance/cautions',
+        icon: 'ti ti-coins',
+        path: 'Cautions'
+    },
+    {
+        id: 5,
+        name: 'Clients',
+        route: '/finance/clients',
+        icon: 'ti ti-users-group',
+        path: 'Clients'
+    },
+    {
+        id: 6,
+        name: 'Budget de caisse',
+        route: '/production/budget',
+        icon: 'ti ti-moneybag',
+        path: 'BudgetCaisse'
+    },
     {
         id: 7,
-        name: 'Demande de caisse',
+        name: 'Decaissement',
+        route: '/logistics/decaissement',
+        icon: 'ti ti-wallet',
+        path: 'Decaissement'
+    },
+    {
+        id: 8,
+        name: 'Demande de congé',
+        route: '/shared/leaves-request',
+        icon: 'ti ti-plane-inflight',
+        path: 'LeavesRequest'
+    },
+    {
+        id: 9,
+        name: 'Recrutements',
+        route: '/shared/recruitment-request',
+        icon: 'ti ti-tie',
+        path: 'RecruitmentRequest'
+    },
+    ...sharedMenu,
+    /* 
+    {
+        id: 5,
+        name: 'Budget de caisse',
         route: '/project/caisse-request',
         icon: 'ti ti-transfer-out',
         path: 'CaisseRequest'
     },
     {
         id: 6,
-        name: 'Congés',
+        name: 'Decaissement',
+        route: '/project/caisse-request',
+        icon: 'ti ti-transfer-out',
+        path: 'CaisseRequest'
+    },
+    {
+        id: 7,
+        name: 'Demande de congé',
         route: '/leaves',
         icon: 'ti ti-plane-inflight',
         path: 'Leaves'
-    },
-
-    ...sharedMenu2,
-    ...sharedMenu
+    }, 
+    ...sharedMenu*/
 ];
 
 export const sideBar = {

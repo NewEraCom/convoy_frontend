@@ -1,43 +1,20 @@
-import { helpers } from '@/utils';
+//import { helpers } from '@/utils';
 
 export const financeRoutes = [
     {
-        path: '/fn/facture',
-        name: 'FnFacture',
-        component: () => import('../views/Finance/InvoiceView.vue'),
+        path: '/finance/cautions',
+        name: 'Cautions',
+        component: () => import('@/views/Finance/CautionsView.vue'),
         meta: {
-            title: 'Finance',
-            role : [helpers.roles.FINANCE]
-        }
+            title: 'Cautions',
+        },
     },
     {
-        path: '/fn/facture/details',
-        name: 'FnFactureDetails',
-        component: () => import('../views/Finance/components/PreviewFacture.vue'),
+        path: '/finance/clients',
+        name: 'Clients',
+        component: () => import('@/views/Finance/ClientsView.vue'),
         meta: {
-            title: 'Finance Details',
-            role : [helpers.roles.FINANCE]
-
-        }
-    },
-    {
-        path: '/fn/caution',
-        name: 'FnCaution',
-        component: () => import('../views/Finance/CautionView.vue'),
-        meta: {
-            title: 'Caution',
-            role : [helpers.roles.FINANCE,helpers.roles.BDM]
-
-        }
-    },
-    {
-        path: '/fn/cheque',
-        name: 'FnCheque',
-        component: () => import('../views/Finance/ChequeView.vue'),
-        meta: {
-            title: 'Cheque',
-            role : [helpers.roles.FINANCE]
-
-        }
+            title: 'Clients',
+        },
     },
 ];

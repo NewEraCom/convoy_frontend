@@ -30,7 +30,7 @@ const redirectBasedOnRole = (role: string): void => {
 const roles = {
 	DEV: 'Dev',
 	SALES: 'Responsable d\'achats',
-	BDM: 'Business development manager',
+	BDM: 'Director Business Development',
 	CF: 'Chef de projet',
 	LOGISTICS: 'Responsable logistique',
 	RH: 'Responsable ressources humaines',
@@ -159,9 +159,9 @@ const returnBadge = (item: any): any[] => {
 		case 'sortie':
 			return ['badge bg-warning', 'Sortie'];
 		case 'simple':
-			return ['badge bg-info', 'Simple'];
+			return ['badge bg-primary', 'Sans Lots'];
 		case 'special':
-			return ['badge bg-info', 'Special'];
+			return ['badge bg-success', 'Avec Lots'];
 		case 'En attente':
 			return [' badge bg-label-warning', 'En attente', 'ti-clock'];
 		case 'En soumission':
@@ -451,6 +451,19 @@ const capitalizeFirst = (value: string) => {
 	return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
+
+const isLastFiveDaysOfTheMonth = () => {
+	const today = new Date(); // Get current date
+	const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Get the last day of the current month
+	const lastFiveStart = new Date(endOfMonth.getFullYear(), endOfMonth.getMonth(), endOfMonth.getDate() - 4); // Calculate the start of the last five days
+
+	return today >= lastFiveStart && today <= endOfMonth; // Check if today is within the last five days
+};
+
+const closeModal = (modalId: string) => {
+	$(`#${modalId}`).modal('hide');
+};
+
 export const helpers = {
 	isActiveRoute,
 	togglePassword,
@@ -474,5 +487,7 @@ export const helpers = {
 	formattedDateTime,
 	formattedText,
 	dateRegex,
-	numberToTextMAD
+	numberToTextMAD,
+	closeModal,
+	isLastFiveDaysOfTheMonth
 };
