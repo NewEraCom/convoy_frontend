@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import { helpers } from '@/utils';
-import { authRoutes, productionRoutes, logisticsRoutes, sharedRoutes, financeRoutes } from './export';
+import { authRoutes, productionRoutes, logisticsRoutes, sharedRoutes, financeRoutes, portalRoutes } from './export';
 
 const router = createRouter({
     history: createWebHistory('/erp'),
@@ -19,6 +19,7 @@ const router = createRouter({
                 ...financeRoutes,
                 ...logisticsRoutes,
                 ...sharedRoutes,
+                ...portalRoutes,
             ]
         },
     ]

@@ -1,5 +1,22 @@
 <script setup>
-import { CardTwo } from '@/ui';
+import { onMounted, onUnmounted, ref, computed } from 'vue';
+import { CardTwo, CardTwoSkeleton } from '@/ui';
+import { leaveService } from '@/services';
+import { useHrStore } from '@/store';
+
+const hrStore = useHrStore();
+
+const leaves = ref(computed(() => hrStore.leaves));
+const leavesStats = ref(computed(() => hrStore.leavesStats));
+
+onMounted(async () => {
+    await leaveService.getLeaveByRespo();
+});
+
+onUnmounted(() => {
+    hrStore.resetLeaves();
+});
+
 
 </script>
 
@@ -13,18 +30,37 @@ import { CardTwo } from '@/ui';
                 <li class="breadcrumb-item active">Demande de congé</li>
             </ol>
         </nav>
-        <div class="row g-3">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-4 col-xxl-4">
-                <CardTwo title="Total Demande" :count="12" color="bg-label-primary" icon="ti ti-bolt"
-                    card-color="card-border-shadow-primary" />
+        <div v-if="leavesStats" class="row g-3">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
+                <CardTwo title="Total Demande" :count="String(leavesStats.total)" color="bg-label-primary"
+                    icon="ti ti-bolt" card-color="card-border-shadow-primary" />
             </div>
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-4 col-xxl-4">
-                <CardTwo title="Demande validé" :count="12" color="bg-label-success" icon="ti ti-bolt"
-                    card-color="card-border-shadow-success" />
+
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
+                <CardTwo title="Demande en attente" :count="String(leavesStats.pending)" color="bg-label-warning"
+                    icon="ti ti-briefcase" card-color="card-border-shadow-warning" />
             </div>
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-4 col-xxl-4">
-                <CardTwo title="Demande en attente" :count="12" color="bg-label-warning" icon="ti ti-briefcase"
-                    card-color="card-border-shadow-warning" />
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
+                <CardTwo title="Demande validé" :count="String(leavesStats.approved)" color="bg-label-success"
+                    icon="ti ti-bolt" card-color="card-border-shadow-success" />
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
+                <CardTwo title="Demande rejeté" :count="String(leavesStats.rejected)" color="bg-label-danger"
+                    icon="ti ti-bolt" card-color="card-border-shadow-danger" />
+            </div>
+        </div>
+        <div v-else class="row g-3">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
+                <CardTwoSkeleton />
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
+                <CardTwoSkeleton />
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
+                <CardTwoSkeleton />
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
+                <CardTwoSkeleton />
             </div>
         </div>
 
@@ -38,7 +74,6 @@ import { CardTwo } from '@/ui';
                         </div>
                     </div>
                     <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-
                         <div class="d-flex align-items-center">
                             <span class="me-2">
                                 De :
@@ -51,10 +86,9 @@ import { CardTwo } from '@/ui';
 
                             <select name="" id="" class="form-select w-160 me-2">
                                 <option value="Tout">Tout</option>
-                                <option value="En attente">En attente</option>
-                                <option value="En soumission">En soumission</option>
-                                <option value="En cours">En cours</option>
-                                <option value="Terminé">Terminé</option>
+                                <option value="pending">En attente</option>
+                                <option value="approved">Validé</option>
+                                <option value="rejected">Rejeté</option>
                             </select>
 
                         </div>

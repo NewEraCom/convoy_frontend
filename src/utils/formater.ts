@@ -113,6 +113,9 @@ const paragraph = (text: string) => {
     return text.replace(/\n/g, '<br>');
 };
 
+const firstUpperCase = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+};
 
 export const formater = {
     number,
@@ -126,4 +129,5 @@ export const formater = {
     limitText,
     monthDifferent,
     paragraph,
+    firstUpperCase
 };

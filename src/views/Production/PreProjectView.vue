@@ -26,9 +26,6 @@ watch(preProjects, (newValue) => {
         preProjects.value = newValue;
     }
 });
-
-
-
 </script>
 
 <template>

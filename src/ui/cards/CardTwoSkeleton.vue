@@ -3,7 +3,7 @@
 <template>
     <div class="card h-100">
         <div class="card-body d-flex justify-content-between align-items-center">
-            <div class="card-title mb-0">
+            <div class="card-title mb-1">
                 <div class="skeleton-text pb-2" style="width: 40px; height: 1rem"></div>
                 <small class="fw-bold">
                     <div class="skeleton-text" style="width: 130px; height: 0.8rem"></div>

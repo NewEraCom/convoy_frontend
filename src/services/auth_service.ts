@@ -9,6 +9,7 @@ const login = async (formData: { email: string, password: string }) => {
             return response;
         }
     } catch (error) {
+        console.log(error);
         return Promise.reject(error);
 
     }

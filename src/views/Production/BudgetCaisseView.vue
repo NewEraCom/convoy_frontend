@@ -13,7 +13,6 @@ onMounted(async () => {
     await caisseService.getCaisseByUser();
     await caisseService.getCaisseList();
 });
-
 </script>
 
 <template>
@@ -110,8 +109,8 @@ onMounted(async () => {
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
+                    <div class="card-body" v-if="caisseList">
+                        <ul class="list-unstyled mb-0" v-if="caisseList.length > 0">
                             <li v-for="item in caisseList" :key="item" class="d-flex mb-4 pb-1 align-items-center">
                                 <div class="avatar flex-shrink-0 me-3">
                                     <span class="avatar-initial rounded bg-label-primary"><i
@@ -154,6 +153,11 @@ onMounted(async () => {
                                 </div>
                             </li>
                         </ul>
+                        <div class="text-center" v-else>
+                            <img src="@/assets/img/No_Results.png" alt="No data" class="img-fluid mt-5" width="200">
+                            <p class="text-muted">Aucun demande de budget de caisse n'a été trouvée.</p>
+                            <small class="text-muted">Vous pouvez créer un nouveau budget de caisse.</small>
+                        </div>
                     </div>
                 </div>
             </div>

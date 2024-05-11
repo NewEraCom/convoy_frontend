@@ -40,23 +40,23 @@ const submit = async () => {
     formData.append('type_project', typePreProject.value);
     formData.append('n_offre', offreNum.value);
     formData.append('maitre_ouvrage', maitreOuvrage.value);
-    formData.append('montant_caution', mtCaution.value);
-    formData.append('montant_marche', mtMarche.value);
+    formData.append('montant_caution_provisoire', mtCaution.value);
+    formData.append('estimation_budget', mtMarche.value);
     formData.append('objet', objet.value);
     formData.append('localite', localite.value);
     formData.append('exigences_majeures', exigencesMajeures.value);
     formData.append('qualification_demande', qualificationDemande.value);
-    formData.append('date_visite', dateVisit.value);
-    formData.append('date_depot', dateDepot.value);
-    formData.append('date_echantillion', dateEchantillion.value);
+    formData.append('date_visite', dateVisit.value.replace('T', ' '));
+    formData.append('date_depot_offre', dateDepot.value.replace('T', ' '));
+    formData.append('date_echantillion', dateEchantillion.value.replace('T', ' '));
     formData.append('description', description.value);
-    formData.append('dossier_adminstratif', dossiers.value[0]);
-    formData.append('offre_financier', dossiers.value[1]);
-    formData.append('dossier_technique', dossiers.value[2]);
-    formData.append('dossier_additif', dossiers.value[3]);
-    formData.append('offre_technique', dossiers.value[4]);
-    formData.append('other_docs', dossiers.value[5]);
-    formData.append('created_by', JSON.parse(localStorage.getItem('user')).id);
+    formData.append('dossier_adminstratif', dossiers.value[0] ? 1 : 0);
+    formData.append('offre_financier', dossiers.value[1] ? 1 : 0);
+    formData.append('dossier_technique', dossiers.value[2] ? 1 : 0);
+    formData.append('dossier_additif', dossiers.value[3] ? 1 : 0);
+    formData.append('offre_technique', dossiers.value[4] ? 1 : 0);
+    formData.append('other_docs', dossiers.value[5] ? 1 : 0);
+    formData.append('created_by', JSON.parse(localStorage.getItem('user')).employee.id);
 
     await preProjectService.storePreproject(formData).then((res) => {
         isLoading.value = false;

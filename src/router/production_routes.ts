@@ -1,6 +1,5 @@
+console.log(helpers.init());
 import { helpers } from '@/utils';
-
-
 
 export const productionRoutes = [
     {

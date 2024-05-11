@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 
-const user = ref(null);
-const env = import.meta.env.VITE_UPLOADS_URL;
-
-onMounted(() => {
-  user.value = JSON.parse(localStorage.getItem('user'));
-});
+defineProps<{
+  user: any;
+  env: string;
+}>();
 
 </script>
 
 <template>
-  <nav v-if="user != null" id="layout-navbar"
+  <nav v-if="user != null" id="layout-navbar" :class="user.type_account == 'erp' ? '' : 'container-md'"
     class="layout-navbar navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme">
     <div id="navbar-collapse" class="navbar-nav-right d-flex align-items-center">
       <p class="text-dark m-0 ms-2">
@@ -107,5 +104,47 @@ onMounted(() => {
   top: 0;
   z-index: 100;
   /* Adjust the z-index if necessary */
+}
+
+.container-md {
+  margin-right: 0rem;
+  margin-left: 0rem;
+}
+
+@media (max-width: 768px) {
+  .container-md {
+    margin-right: 0rem !important;
+    margin-left: 0rem !important;
+    padding: 0 !important;
+  }
+}
+
+@media (max-width: 992px) and (min-width: 768px) {
+  .container-md {
+    margin-right: 1rem !important;
+    margin-left: 1rem !important;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 992px) {
+  .container-md {
+    margin-right: 14rem !important;
+    margin-left: 14rem !important;
+  }
+}
+
+@media (max-width: 1458px) and (min-width: 1200px) {
+  .container-md {
+    margin-right: 18rem !important;
+    margin-left: 18rem !important;
+  }
+}
+
+@media (min-width: 1458px) {
+  .container-md {
+    margin-right: 20rem !important;
+    margin-left: 20rem !important;
+    width: 100% !important;
+  }
 }
 </style>

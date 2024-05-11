@@ -29,9 +29,8 @@ const preprojectService = {
             } else {
                 productionStore.setError();
             }
-
             return res.status;
-        } catch {
+        } catch (error) {
             productionStore.setError();
             return 500;
         }
