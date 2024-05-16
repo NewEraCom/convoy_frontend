@@ -41,8 +41,8 @@ onMounted(() => {
                                         <th class="fw-bold text-center">Statut</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr v-for="item in 10" :key="item">
+                                <tbody v-if="user && user.employee.leaves.length > 0">
+                                    <tr v-for="item in user.employee.leaves" :key="item">
                                         <td> <small>2020-11-02 </small></td>
                                         <td class="text-center"> <small> 2020-11-02</small> </td>
                                         <td class="text-center"> <small> 2020-11-02</small> </td>
@@ -51,6 +51,13 @@ onMounted(() => {
                                         <td class="text-center">
                                             <span class="badge bg-success bg-sm">
                                                 Validé </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody v-else>
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            <small class="text-muted">Rien ici pour l'instant !</small>
                                         </td>
                                     </tr>
                                 </tbody>

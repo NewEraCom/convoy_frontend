@@ -26,10 +26,15 @@ onMounted(() => {
         </nav>
 
         <div class="row mt-3">
-            <div class="col-12 text-center" v-if="contrat == null">
-                <img src="@/assets/img/no_pre_project.png" height="350px" alt="">
-                <p class="mt-4">Rien ici pour l'instant !</p>
-                <p class="text-muted fw-normal">Quand vous obtenez un nouveau contrat, vous le trouverez ici.</p>
+            <div class="col-12 text-center" v-if="user && user.employee.contrat == null">
+                <div class="card shadow-none border">
+                    <div class="card-body">
+                        <img src="@/assets/img/no_pre_project.png" height="350px" alt="">
+                        <p class="mt-4">Rien ici pour l'instant !</p>
+                        <p class="text-muted fw-normal">Quand vous obtenez un nouveau contrat, vous le trouverez ici.
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="col-12" v-else>
                 <iframe :src="contrat" width="100%" height="1200vh" style="border: none;">

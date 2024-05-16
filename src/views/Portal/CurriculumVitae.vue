@@ -27,19 +27,35 @@ onMounted(() => {
             </ol>
         </nav>
         <div class="row">
-            <div class="col-12 d-flex align-items-center">
+            <div class="col-12 d-flex align-items-center" v-if="user">
                 <h6 class="m-0">Votre Curriculum Vitae</h6>
                 <button class="btn btn-outline-primary btn-sm ms-auto" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#uploadCv" aria-controls="offcanvasEnd">
+                    data-bs-target="#uploadCv" aria-controls="offcanvasEnd" v-if="user.employee.cv != null">
                     <i class="ti ti-pencil me-2"></i>
                     Modifier
                 </button>
-                <UploadCvCanva />
             </div>
-            <div class="col-12 mt-4">
+            <div class="col-12 mt-4" v-if="user && user.employee.cv">
                 <iframe :src="cv" width="100%" height="1200vh" style="border: none;">
                 </iframe>
             </div>
+            <div class="col-12 mt-4 text-center" v-else>
+                <div class="card shadow-none border">
+                    <div class="card-body">
+                        <img src="@/assets/img/No_Results.png" height="250px" alt="alert" class="me-2" />
+                        <h6>Vous n'avez pas encore de CV</h6>
+                        <p class="text-muted">
+                            Please upload your CV to complete your profile
+                        </p>
+                        <button class="btn btn-outline-primary btn-sm ms-auto" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#uploadCv" aria-controls="offcanvasEnd">
+                            <i class="ti ti-upload me-2"></i>
+                            Ajouter un CV
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <UploadCvCanva />
         </div>
 
     </div>

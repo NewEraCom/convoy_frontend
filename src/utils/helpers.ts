@@ -19,9 +19,13 @@ const setSavedUser = (res: any) => {
 	localStorage.setItem('isOnline', 'true');
 	localStorage.setItem('role', res.user.roles[0].name);
 	localStorage.setItem('token', res.token);
-
 };
 
+const updateSavedEmployee = (res: any) => {
+	const user = JSON.parse(localStorage.getItem('user') || '{}');
+	user.employee = res;
+	localStorage.setItem('user', JSON.stringify(user));
+};
 
 const redirectBasedOnRole = (role: string): void => {
 	router.push({ name: initialDashboard(role) });
@@ -236,7 +240,7 @@ function bankName(bank: string) {
 		case 'CIH':
 			return [CIH, 'CIH Bank'];
 		case 'SOCIETE GENERALE':
-			return [SGM, 'Soceite Generale'];
+			return [SGM, 'Société Générale'];
 		case 'BMCI':
 			return [BMCI, 'BMCI Bank'];
 		case 'ATTIJARIWAFA BANK':
@@ -492,5 +496,6 @@ export const helpers = {
 	dateRegex,
 	numberToTextMAD,
 	closeModal,
-	isLastFiveDaysOfTheMonth
+	isLastFiveDaysOfTheMonth,
+	updateSavedEmployee
 };

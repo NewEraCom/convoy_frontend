@@ -38,6 +38,7 @@ watch(error, (newValue) => {
                 </li>
             </ol>
         </nav>
+
         <div v-if="stats" class="row g-3">
             <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-3 col-xxl-3">
                 <CardTwo title="Avant projet en attente" :count="String(stats.waiting)" color="bg-label-warning"

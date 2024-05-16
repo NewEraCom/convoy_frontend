@@ -1,30 +1,34 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { usePortalStore } from '@/store';
+import { portalService } from '@/services';
 import { RequestAbsentCanva, RequestRemotlyCanva, RequestLeaveCanva } from './componenets';
 
-const user = ref(null);
+const portalStore = usePortalStore();
 
+const employee = ref(computed(() => portalStore.employee));
 
-onMounted(() => {
-    user.value = JSON.parse(localStorage.getItem('user'));
+onMounted(async () => {
+    await portalService.getCurrentEmployee();
 });
+
 </script>
 
 <template>
     <div class="flex-grow-2 container-md mt-3">
-        <div class="row gy-4 mb-3" v-if="user">
+        <div class="row gy-4 mb-3" v-if="employee">
             <div class="col-lg-12">
-                <div class="card  border-none welcome-card p-0">
+                <div class="card border-none welcome-card p-0">
                     <div
                         class="card-body border-none d-flex justify-content-between border rounded align-items-center p-3 ps-5 pe-5 p-0">
                         <div
                             class="mb-0 w-100 app-academy-sm-60 d-flex flex-column justify-content-between text-center text-sm-start">
                             <div class="card-title">
-                                <h4 class="text-white fw-bold mb-2">Bonjour, {{ user.employee.first_name }}</h4>
+                                <h4 class="text-white fw-bold mb-2">Bonjour, {{ employee.first_name }}</h4>
                                 <p class="text-white w-sm-80 app-academy-xl-100 mb-1">
-                                    {{ user.employee.poste }} chez NewEraCom
+                                    {{ employee.poste }} chez NewEraCom
                                 </p>
-                                <small class="text-muted ">Date d'embauche: {{ user.employee.date_embauche }}</small>
+                                <small class="text-white">Date d'embauche: {{ employee.date_embauche }}</small>
                             </div>
                         </div>
                         <div class="w-100 app-academy-sm-40 d-flex justify-content-center justify-content-sm-end h-px-150 me-4 mb-sm-0"
@@ -150,19 +154,6 @@ onMounted(() => {
                     </div>
                 </button>
                 <button class="btn btn-outline-primary btn-lg shadow-none" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#requestAbsent" aria-controls="requestAbsent">
-                    <div class="d-flex justify-content-between align-items-center me-auto">
-                        <i class="ti ti-calendar-plus me-3"></i>
-                        <small>
-                            <strong>Demande une absence</strong>
-                        </small>
-                    </div>
-                    <div class="text-primary">
-                        <i class="ti ti-chevron-right m-auto"></i>
-                    </div>
-                </button>
-
-                <button class="btn btn-outline-primary btn-lg shadow-none" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#requestRemotly" aria-controls="requestRemotly">
                     <div class="d-flex justify-content-between align-items-center me-auto">
                         <i class="ti ti-home-cog me-3"></i>
@@ -177,8 +168,6 @@ onMounted(() => {
 
                 <div class="ms-auto me-auto">
                     <small class="text-muted mt-3 d-flex align-items-center">
-                        Powered by&nbsp;<strong>NewEraCom</strong>&nbsp;&nbsp;
-                        <span>&nbsp;- </span>
                         <button class="btn-link" data-bs-toggle="modal" data-bs-target="#logout-modal">Se
                             déconnecter</button>
                     </small>
@@ -194,7 +183,7 @@ onMounted(() => {
 <style>
 .welcome-card {
     background-color: #2a3042 !important;
-    height: 150px !important;
+    height: 170px !important;
 }
 
 .btn-link {
@@ -221,8 +210,8 @@ onMounted(() => {
 
 @media (max-width: 768px) {
     .container-md {
-        padding-right: 0rem !important;
-        padding-left: 0rem !important;
+        padding-right: 2rem !important;
+        padding-left: 2rem !important;
     }
 }
 
@@ -249,8 +238,8 @@ onMounted(() => {
 
 @media (min-width: 1458px) {
     .container-md {
-        padding-right: 20rem !important;
-        padding-left: 20rem !important;
+        padding-right: 24rem !important;
+        padding-left: 24rem !important;
     }
 }
 </style>
