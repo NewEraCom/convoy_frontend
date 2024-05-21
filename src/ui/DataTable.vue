@@ -189,6 +189,21 @@ watch(() => props.pageSize, () => {
                             <span v-if="header.type === 'test'">
                                 {{ item }}
                             </span>
+                            <span v-if="header.type === 'time'">
+                                    {{ formater.time(String(item[header.value])) }}
+                                </span>
+                                <span v-if="header.type === 'workingHour'">
+                                    <span class="fw-bold"
+                                        :class="helpers.calculateDifference(item, item.employee.working_hours)[2]">
+                                        {{ helpers.calculateDifference(item, item.employee.working_hours)[0] }}
+                                    </span>
+                                </span>
+                                <span v-if="header.type === 'workingHourCustom'">
+                                    <span class="fw-bold"
+                                        :class="helpers.calculateDifference(item, item.employee.working_hours)[2]">
+                                        {{ helpers.calculateDifference(item, item.employee.working_hours)[0] }}
+                                    </span>
+                                </span>
 
                         </td>
                         <td class="text-center" v-if="header.isComplex && header.type === 'date_echantillion'">
@@ -200,6 +215,13 @@ watch(() => props.pageSize, () => {
                             <i v-if="item.date_visite != null"
                                 class="ti ti-square-rounded-check-filled text-success f-26"></i>
                             <i v-else class="ti ti-square-rounded-x-filled text-danger f-26"></i>
+                        </td>
+                        <td v-if="header.isComplex && header.type === 'employee'"
+                            :class="index == 0 ? 'text-start' : 'text-center'">
+                            <router-link :to="{ name: 'ProfileEmployee', params: { id: item.id } }">
+                                <h6 class="mb-1 fw-bold text-primary">{{ item.first_name + ' ' + item.last_name }}</h6>
+                            </router-link>
+                            <small class="fw-bold text-muted">Matricule : {{ item.matricule }}</small>
                         </td>
 
 

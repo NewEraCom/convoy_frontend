@@ -58,7 +58,7 @@ function changePage(page) {
 }
 
 onMounted(async () => {
-    employees.value = await employeeService.getEmployees();
+    employees.value = await employeeService.getActiveEmployees();
     env.value = import.meta.env.VITE_UPLOADS_URL;
 });
 

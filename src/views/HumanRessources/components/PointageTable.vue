@@ -1,0 +1,118 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DataTable, Modal } from '@/ui';
+
+const props = defineProps({
+    pointages: {
+        type: Array,
+        required: true,
+    },
+    custom: {
+        type: Boolean,
+        default: true,
+    },
+});
+
+const headers = [
+    { text: 'Date de pointage', value: 'date_pointage', isComplex: false, type: 'date' },
+    { text: 'Heure d\'entrée', value: 'clock_in', type: 'time' },
+    { text: 'Heure de sortie', value: 'clock_out', type: 'time' },
+    { text: 'Break in', value: 'break_start', type: 'time' },
+    { text: 'Break out', value: 'break_end', type: 'time' },
+    { text: 'Heures travaillées', value: 'worked_hours', type: props.custom ? 'workingHour' : 'workingHourCustom' },
+];
+
+
+if (props.custom === true) {
+    headers.unshift({ text: 'Employe', value: 'employe', isComplex: true, type: 'leave' },
+    );
+}
+
+
+
+const actionsConfig = [
+    {
+        icon: 'ti ti-eye', text: 'Modifier', class: 'text-dark', onClick: (item: any) => {
+            console.log('Edit item', item);
+        }
+    },
+    { icon: 'ti ti-trash-filled', text: 'Supprimer', type: 'delete', class: 'text-danger', onClick: (item: any) => deleteItem(item) }
+];
+
+
+const deleteItem = (item: any) => {
+    console.log('Delete item', item);
+};
+
+const filteredData = ref(props.pointages);
+
+
+const searchQuery = ref('');
+const startQuery = ref();
+const endQuery = ref();
+const itemPerPage = ref(15);
+
+const filter = () => {
+    filteredData.value = props.pointages.filter((item: any) => {
+        let combinedFields = `${item.date_pointage}`.toLowerCase();
+        if (props.custom === true) {
+            combinedFields += `${item.employe.first_name} ${item.employe.last_name}`.toLowerCase();
+        }
+        const searchWords = searchQuery.value.toLowerCase().split(' ');
+        return searchWords.every(word => combinedFields.includes(word)) &&
+            (!startQuery.value || new Date(item.date_pointage) >= new Date(startQuery.value)) &&
+            (!endQuery.value || new Date(item.date_pointage) <= new Date(endQuery.value));
+    });
+};
+
+</script>
+<template>
+    <div>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <input v-model="searchQuery" type="search" class="form-control w-240 me-2" placeholder="Rechercher..."
+                        @input="filter" />
+
+                    <div v-if="custom" class="d-flex align-items-center ms-2">
+                        <label for="start">De</label>
+                        <input v-model="startQuery" type="date" id="start" class="form-control ms-2 me-2"
+                            @change="filter" />
+                    </div>
+                    <div v-if="custom" class="d-flex align-items-center ms-0">
+                        <label for="end">à</label>
+                        <input v-model="endQuery" type="date" id="end" class="form-control ms-2 me-2" @change="filter" />
+                    </div>
+                    <div class="d-flex align-items-center ms-auto">
+                        <label for="">Afficher</label>
+                        <select v-model="itemPerPage" name="" class="form-select ms-2 me-2 w-120">
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                            <option value="60">60</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" disabled data-bs-toggle="modal" data-bs-target="#details-modal">
+                        <i class="ti ti-file-type-csv me-2"></i>
+                        Exporter
+                    </button>
+                </div>
+            </div>
+        </div>
+        <DataTable :items="filteredData" :headers="headers" :page-size=itemPerPage :actionsConfig="actionsConfig"
+            button-type="custom" disabled="true" />
+
+    </div>
+</template>
+<style>
+.w-240 {
+    width: 240px;
+}
+
+.modal {
+    position: fixed;
+    /* Or another non-static position */
+    z-index: 10000;
+    /* Adjust as needed */
+}
+</style>

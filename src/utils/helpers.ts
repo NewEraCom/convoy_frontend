@@ -33,7 +33,7 @@ const roles = {
 	BDM: 'Director Business Development',
 	CF: 'Chef de projet',
 	LOGISTICS: 'Responsable logistique',
-	RH: 'Responsable ressources humaines',
+	RH: 'Human Resource',
 	DG: 'Directeur general',
 	DS: 'Directeur support',
 	DO: 'Directeur des opérations',
@@ -177,6 +177,10 @@ const returnBadge = (item: any): any[] => {
 			return ['badge bg-label-dark', 'Non Validé', 'ti-circle-x'];
 		case 'valide':
 			return ['badge bg-label-success', 'Validé', 'ti-circle-x'];
+		case 'conge':
+			return ['badge bg-success', 'Congé'];
+		case 'maladie':
+			return ['badge bg-warning', 'Maladie'];
 		default:
 			return ['badge bg-secondary', 'Autre'];
 	}

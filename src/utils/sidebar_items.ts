@@ -152,6 +152,20 @@ const RHMenu = [
         path: 'DocumentsRH'
     }, */
     {
+        id: 5,
+        name: 'Decaissement',
+        route: '/caisse',
+        icon: 'ti ti-cash',
+        path: 'Caisse'
+    },
+    {
+        id: 9,
+        name: 'Budget de caisse',
+        route: '/caisse-budget',
+        icon: 'ti ti-coins',
+        path: 'CaisseValidation'
+    },
+    {
         id: 8,
         name: 'Recrutements',
         route: '/recruitments',

@@ -4,3 +4,4 @@ export * from './production_routes';
 export * from './logistics_routes';
 export * from './shared_routes';
 export * from './portal_routes';
+export * from './human_ressource_routes';
