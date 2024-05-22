@@ -1,5 +1,5 @@
 import { api } from '@/utils';
-import { useRhStore, useSharedStore } from '@/store';
+import { useRhStore } from '@/store';
 
 const getEmployees = async () => {
     try {

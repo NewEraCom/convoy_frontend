@@ -11,6 +11,7 @@ const employeeService = {
             const res = await api().get(url + 'get');
             if (res.status == 200) {
                 hrStore.setEmployees(res.data.employees);
+                console.log(res.data.employees)
             } else {
                 hrStore.setError();
             }

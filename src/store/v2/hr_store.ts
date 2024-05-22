@@ -5,7 +5,7 @@ export const useHrStore = defineStore('HrStore', {
     state: () => ({
         leaves: null,
         leavesStats: null,
-        employees: null,
+        employees: [],
         error: false
     }),
     actions: {
@@ -24,6 +24,7 @@ export const useHrStore = defineStore('HrStore', {
         },
         setEmployees(data) {
             this.employees = data;
+            console.log(this.employees)
         },
         setError() {
             this.error = true;
