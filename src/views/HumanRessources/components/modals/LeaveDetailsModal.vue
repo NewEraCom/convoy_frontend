@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onUnmounted, ref, watch } from 'vue';
 import { Modal } from '@/ui';
-import { useRhStore } from '@/store';
+import { useHrStore } from '@/store';
 import { helpers, formater } from '@/utils';
-
-const rhStore = useRhStore();
+import {Validate} from './';
+import { leaveService } from '@/services';
+const rhStore = useHrStore();
 
 
 const formData = ref({
@@ -12,57 +13,78 @@ const formData = ref({
     employee: null,
     type: null,
     status: null,
-    duree: null,
-    date_start: null,
-    date_end: null,
-    attachement: null,
+    duration: null,
+    start_date: null,
+    end_date: null,
+    attachment: null,
     created_at: null,
+    validation_manager:null,
+    reason:null
 });
-
+const isLoading = ref(false);
 watch(() => rhStore.Item, () => {
     if (rhStore.Item) {
-        formData.value.employee_id = rhStore.Item.employe.id;
-        formData.value.employee = rhStore.Item.employe.first_name + ' ' + rhStore.Item.employe.last_name;
+        formData.value.employee_id = rhStore.Item.employee.id;
+        formData.value.employee = rhStore.Item.employee.first_name + ' ' + rhStore.Item.employee.last_name;
         formData.value.type = rhStore.Item.type;
         formData.value.status = rhStore.Item.status;
-        formData.value.duree = rhStore.Item.duree;
+        formData.value.duration = rhStore.Item.duration;
         formData.value.status = rhStore.Item.status;
-        formData.value.date_start = rhStore.Item.date_start;
-        formData.value.date_end = rhStore.Item.date_end;
-        formData.value.attachement = rhStore.Item.attachements;
+        formData.value.start_date = rhStore.Item.start_date;
+        formData.value.end_date = rhStore.Item.end_date;
+        formData.value.attachment = rhStore.Item.attachment;
         formData.value.created_at = rhStore.Item.created_at;
+        formData.value.validation_manager = rhStore.Item.validation_manager;
+        formData.value.reason = rhStore.Item.reason;
     }
 });
 const getFileUrl = (attachment) => {
-    return helpers.baseUrl() + `uploads/employe/${attachment}`;
+    return helpers.baseUrl() + `uploads/documents/${attachment}`;
 };
 
-// const submit = async () => {
-//     isLoading.value = true;
-//     if (formData.value.employee_id === '-' || formData.value.employee === null || formData.value.avance === null || 
-//     formData.value.deduction === null || formData.value.date_start === null || formData.value.status === null || 
-//     formData.value.approval_rh === null ) {
-//         isLoading.value = false;
-//         return;
-//     }
-//     const data = { status: 1,};
-//     await rhService.validateAvavnce(rhStore.salaryAdvanceSelected.id,data).then(() => {
-//         console.log('Employee added');
-//         rhStore.salaryAdvanceSelected = null;
-//         $('#showSalaryAdvance').modal('hide');
-//     }).catch((error) => {
-//         console.error('Error during action execution', error);
-//     }).finally(() => {
-//         isLoading.value = false;
-//     });
-// };
+onUnmounted(()=>{
+    rhStore.clearItem();
+});
 
 
+const ValidateConge = async () => {
+  isLoading.value = true;
+
+  const formData = new FormData();
+  formData.append('status', 'approved');
+  await leaveService.validateAdmin(rhStore.Item.id, formData).then(() => {
+    isLoading.value = false;
+    $('#validate-modal').modal('hide');
+
+  });
+console.log(rhStore.Item.id);
+  console.log($('#reason').val());
+};
+const RejectConge = async () => {
+  isLoading.value = true;
+
+  const formData = new FormData();
+  formData.append('status', 'rejected');
+  formData.append('reason', $('#reason').val());
+  await leaveService.validateAdmin(rhStore.Item.id, formData).then(() => {
+    isLoading.value = false;
+    $('#reject-modal').modal('hide');
+
+  });
+  console.log(rhStore.Item.id);
+  console.log($('#reason').val());
+};
 </script>
 <template>
     <Modal id="showLeave" title="Details de la demande de congé" size="modal-xl">
         <div class="modal-body">
             <div class="row">
+                <div class="col-sm-12">
+                    <div class="mb-3  float-end">
+                        <button class="btn btn-success m-1" data-bs-target="#validate-modal" data-bs-toggle="modal">Approuvé</button>
+                        <button class="btn btn-danger m-1" data-bs-target="#reject-modal" data-bs-toggle="modal">Rejetée</button>
+                    </div>
+                </div>
                 <div v-if="formData.employee" class="col-sm-12">
                     <div class="mb-3">
                         <label for="avance" class="form-label">Employé</label>
@@ -81,25 +103,25 @@ const getFileUrl = (attachment) => {
                 <div class="col-sm-6">
                     <div class="mb-3">
                         <label for="deduction" class="form-label">Durée</label>
-                        <input class="form-control" type="text" tabindex="0" id="Type" v-model="formData.duree"
+                        <input class="form-control" type="text" tabindex="0" id="Type" v-model="formData.duration"
                             disabled>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="mb-3">
                         <label for="deduction" class="form-label">Date debut</label>
-                        <input class="form-control" type="date" tabindex="0" id="Type" v-model="formData.date_start"
+                        <input class="form-control" type="date" tabindex="0" id="Type" v-model="formData.start_date"
                             disabled>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="mb-3">
                         <label for="deduction" class="form-label">Date fin</label>
-                        <input class="form-control" type="date" tabindex="0" id="Type" v-model="formData.date_end"
+                        <input class="form-control" type="date" tabindex="0" id="Type" v-model="formData.end_date"
                             disabled>
                     </div>
                 </div>
-                <div class="col-sm-12" v-if="formData.attachement">
+                <div class="col-sm-12" v-if="formData.attachment">
                     <div class="mb-3">
                         <label for="deduction" class="form-label">Attachement</label>
                         <div class="card-body d-flex align-items-center">
@@ -107,11 +129,11 @@ const getFileUrl = (attachment) => {
                                 <i class="ti ti-file-filled"></i>
                             </div>
                             <div class="ms-2">
-                                <a :href="getFileUrl(formData.attachement)">
+                                <a :href="getFileUrl(formData.attachment)" target="_blank">
                                     <h6 class="mb-2">
                                         {{
                     formater.limitText(
-                        formData.attachement,
+                        formData.attachment,
                         55
                     )
                 }}
@@ -130,14 +152,29 @@ const getFileUrl = (attachment) => {
                 </div>
 
 
-
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <div class="mb-3">
-                        <label for="date_start" class="form-label">Status</label>
+                        <label for="date_start" class="form-label">Validation Responsable</label>
+                        <span class="d-flex fw-bold align-items-center badge badge-pill" style=" height: 40px;"
+                            :class="helpers.returnBadge(String(formData.validation_manager))[0]">
+                            {{ helpers.returnBadge(String(formData.validation_manager))[1] }}
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <label for="date_start" class="form-label"></label>
                         <span class="d-flex fw-bold align-items-center badge badge-pill" style=" height: 40px;"
                             :class="helpers.returnBadge(String(formData.status))[0]">
                             {{ helpers.returnBadge(String(formData.status))[1] }}
                         </span>
+                    </div>
+                </div>
+                <div class="col-sm-6" v-if="formData.status=='rejected' || formData.validation_manager=='rejected'">
+                    <div class="mb-3">
+                        <label for="deduction" class="form-label">Raison</label>
+                        <input class="form-control" type="text" tabindex="0" id="Type" v-model="formData.reason"
+                            disabled>
                     </div>
                 </div>
             </div>
@@ -147,15 +184,11 @@ const getFileUrl = (attachment) => {
                 @click="rhStore.Item == null">
                 Fermer
             </button>
-            <!-- <button v-if="formData.approval_rh == '0'" type="submit" :disabled="isLoading" class="btn btn-success">
-                    <span v-if="isLoading" class="d-flex align-items-center">
-                        <div class="spinner-border spinner-border-sm text-white me-2" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        Chargement...
-                    </span>
-                    <span v-else> Valider </span>
-                </button> -->
+           
         </div>
     </Modal>
+    <Validate id="validate-modal" :isLoading="isLoading" :method="ValidateConge" :itemid="rhStore.Item.id" v-if="rhStore.Item"
+      title="Valider congé" message="Êtes-vous sûr de valider ce congé" severity="success" />
+    <Validate id="reject-modal" :isLoading="isLoading" :method="RejectConge" :itemid="rhStore.Item.id" v-if="rhStore.Item"
+      title="Rejeter congé" message="Êtes-vous sûr de rejeter ce congé" severity="danger" :reason="true"/>
 </template>

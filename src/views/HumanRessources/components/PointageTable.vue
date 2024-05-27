@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { DataTable, Modal } from '@/ui';
+import { useHrStore } from '@/store';
 
+const rhStore = useHrStore();
 const props = defineProps({
     pointages: {
         type: Array,
@@ -31,17 +33,15 @@ if (props.custom === true) {
 
 
 const actionsConfig = [
-    {
-        icon: 'ti ti-eye', text: 'Modifier', class: 'text-dark', onClick: (item: any) => {
-            console.log('Edit item', item);
-        }
-    },
+   
     { icon: 'ti ti-trash-filled', text: 'Supprimer', type: 'delete', class: 'text-danger', onClick: (item: any) => deleteItem(item) }
 ];
 
 
 const deleteItem = (item: any) => {
     console.log('Delete item', item);
+    $('#delete-modal').modal('show');
+    rhStore.ItemId = item.id;
 };
 
 const filteredData = ref(props.pointages);
@@ -56,7 +56,7 @@ const filter = () => {
     filteredData.value = props.pointages.filter((item: any) => {
         let combinedFields = `${item.date_pointage}`.toLowerCase();
         if (props.custom === true) {
-            combinedFields += `${item.employe.first_name} ${item.employe.last_name}`.toLowerCase();
+            combinedFields += `${item.employee.first_name} ${item.employee.last_name}`.toLowerCase();
         }
         const searchWords = searchQuery.value.toLowerCase().split(' ');
         return searchWords.every(word => combinedFields.includes(word)) &&
@@ -64,7 +64,7 @@ const filter = () => {
             (!endQuery.value || new Date(item.date_pointage) <= new Date(endQuery.value));
     });
 };
-
+watch(props.pointages, filter);
 </script>
 <template>
     <div>
@@ -100,7 +100,7 @@ const filter = () => {
             </div>
         </div>
         <DataTable :items="filteredData" :headers="headers" :page-size=itemPerPage :actionsConfig="actionsConfig"
-            button-type="custom" disabled="true" />
+            button-type="custom" />
 
     </div>
 </template>

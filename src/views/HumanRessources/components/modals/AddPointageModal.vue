@@ -6,7 +6,7 @@ import { useToast } from 'vue-toastification';
 
 const toast = useToast();
 
-const porps = defineProps({
+const props = defineProps({
     employees: {
         type: Object,
         default: () => ({})
@@ -29,8 +29,8 @@ const formData = ref({
     shift_date: null,
     shift_in: null,
     shift_out: null,
-    break_in: null,
-    break_out: null,
+    break_in: '13:00:00',
+    break_out: '13:00:00',
 });
 
 const message = ref(null);
@@ -40,21 +40,33 @@ const submit = async () => {
 
     isLoading.value = true;
 
-    if (porps.source == 'simple') {
-        formData.value.employee_id = String(porps.id);
+    if (props.source == 'simple') {
+        formData.value.employee_id = String(props.id);
     } else {
         formData.value.employee_id = formData.value.employee_id.key;
     }
-
-    await employeeService.addPointage(formData.value).then(() => {
-        $('#addPointage').modal('hide');
-        toast.success('Pointage ajouté avec succès');
-    }).catch((error) => {
-        console.error('Error during action execution', error);
-        toast.error('Erreur lors de l\'ajout du pointage');
-    }).finally(() => {
-        isLoading.value = false;
-    });
+    if (props.source == 'complex') {
+        
+        await employeeService.addPointage(formData.value).then(() => {
+            $('#addPointage').modal('hide');
+            toast.success('Pointage ajouté avec succès');
+        }).catch((error) => {
+            console.error('Error during action execution', error);
+            toast.error('Erreur lors de l\'ajout du pointage');
+        }).finally(() => {
+            isLoading.value = false;
+        });
+    }else{
+        await employeeService.addEmpPointage(formData.value).then(() => {
+            $('#addPointage').modal('hide');
+            toast.success('Pointage ajouté avec succès');
+        }).catch((error) => {
+            console.error('Error during action execution', error);
+            toast.error('Erreur lors de l\'ajout du pointage');
+        }).finally(() => {
+            isLoading.value = false;
+        });
+    }
 };
 
 </script>
@@ -65,11 +77,11 @@ const submit = async () => {
                 <div class="row">
                     <div v-if="employees != null && source != 'simple'" class="col-12 mb-3">
                         <CustomSelect v-model="formData.employee_id" placeholder="Choisir un employee" label="Employee"
-                            :data="employees.filter(item => item.status == 1).map((item) => ({
-            key: item.id,
-            value: item.first_name + ' ' + item.last_name
-        }))
-            " />
+                            :data="employees.filter(item => item.status == 'active').map((item) => ({
+                                    key: item.id,
+                                    value: item.first_name + ' ' + item.last_name
+                                }))
+                        " />
                     </div>
                     <div class="col-sm-12">
                         <div class="mb-3">
@@ -105,14 +117,14 @@ const submit = async () => {
                         <div class="mb-3">
                             <label class="form-label"> Heure de pause </label>
                             <input id="break_in" v-model="formData.break_in" class="form-control"
-                                placeholder="Entre le titre de document" type="time" required />
+                                placeholder="Entre le titre de document" type="time"  />
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="mb-3">
                             <label class="form-label"> Heure de reprise </label>
                             <input id="break_out" v-model="formData.break_out" class="form-control"
-                                placeholder="Entre le titre de document" type="time" required />
+                                placeholder="Entre le titre de document" type="time"  />
                         </div>
                     </div>
                 </div>

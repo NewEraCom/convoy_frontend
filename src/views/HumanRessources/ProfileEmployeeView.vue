@@ -9,7 +9,7 @@ import {
     EditSalaryModal, AugementationSalaryModal, EditLeavePerMonthModal,
     AddCongeModal, EditBanInfoModal, EditCnssModal,
     AddDocumentModal, DeleteDocModal, AddPointageModal,
-    EditEmployeeModal, RuptureContractModal
+    EditEmployeeModal, RuptureContractModal,AffectEmpProjectModal
 } from './components/modals';
 
 import { useToast } from 'vue-toastification';
@@ -74,7 +74,7 @@ const DeleteDoc = async () => {
                     <i class="ti ti-pencil me-2"></i>
                     Modifier
                 </button>
-                <button v-if="employee.status === '1'" class="btn btn-danger ms-2" data-bs-toggle="modal"
+                <button v-if="employee.status === 'active'" class="btn btn-danger ms-2" data-bs-toggle="modal"
                     data-bs-target="#ruptureContrat">
                     <i class="ti ti-circle-x-filled me-2"></i>
                     Rupture de contrat
@@ -373,7 +373,7 @@ const DeleteDoc = async () => {
                         <div class="card card-action card-border-shadow-primary">
                             <div class="card-header align-items-center">
                                 <h5 class="card-action-title mb-0">Historique</h5>
-                                <button class="btn btn-primary btn-sm">
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#AffecteEmp">
                                     <i class="ti ti-paperclip me-2"></i>
                                     Affecter a nouveau projet
                                 </button>
@@ -656,7 +656,7 @@ const DeleteDoc = async () => {
             <EditEmployeeModal :employee="employee" />
             <RuptureContractModal :id="employee.id" />
             <AddPointageModal source="simple" :id="Number(id)" />
-
+            <AffectEmpProjectModal :emp_id="Number(employee.id)" />
         </div>
         <div v-else>
             <EmployeeSkeleton />

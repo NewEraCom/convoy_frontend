@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Modal } from '@/ui';
-import { rhService } from '@/services';
+import { employeeService } from '@/services/v2/human_ressource';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
@@ -28,7 +28,7 @@ const handleFileChange = (e, type) => {
 const submit = async () => {
 
     isLoading.value = true;
-    await rhService.RuptureContractEmployee(props.id, formData.value).then(() => {
+    await employeeService.RuptureContractEmployee(props.id, formData.value).then(() => {
         $('#ruptureContrat').modal('hide');
         toast.success('Rupture de contrat effectuée avec succès');
     }).catch((error) => {

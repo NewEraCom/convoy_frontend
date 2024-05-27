@@ -2,12 +2,9 @@
 import { ref } from 'vue';
 import { DataTable, Modal } from '@/ui';
 import { formater, helpers } from '@/utils';
-import { rhService } from '@/services';
-import { useRhStore } from '@/store';
-import { useRouter } from 'vue-router';
+import { useHrStore } from '@/store';
 
-const rhStore = useRhStore();
-const router = useRouter();
+const rhStore = useHrStore();
 const props = defineProps({
     leaves: {
         type: Array,
@@ -18,10 +15,11 @@ const props = defineProps({
 const headers = [
     { text: 'Employe', value: 'employee', isComplex: true, type: 'leave' },
     { text: 'Type', value: 'type', type: 'badge' },
-    { text: 'Durée', value: 'duree', type: 'days' },
-    { text: 'Date de début', value: 'date_start', type: 'date' },
-    { text: 'Date de fin', value: 'date_end', type: 'date' },
+    { text: 'Durée', value: 'duration', type: 'days' },
+    // { text: 'Date de début', value: 'start_date', type: 'date' },
+    // { text: 'Date de fin', value: 'end_date', type: 'date' },
     { text: 'Date de demande', value: 'created_at', type: 'datetime' },
+    { text: 'Validation Responsable', value: 'validation_manager', type: 'badge' },
     { text: 'Status', value: 'status', type: 'badge' },
 ];
 
@@ -30,11 +28,13 @@ const actionsConfig = [
     
 ];
 if( [helpers.roles.DG , helpers.roles.DS ,helpers.roles.DO,helpers.roles.BDM ,helpers.roles.RH ].includes(localStorage.getItem('role'))){
-    actionsConfig.push({ icon: 'ti ti-check', class: 'btn btn-success btn-sm', onClick: (item: any) => {
-        showValidationModal(item);
-    } },
-    { icon: 'ti ti-ban', class: 'btn btn-warning btn-sm', onClick: (item: any) => RejectItem(item) },
-    { icon: 'ti ti-trash', class: 'btn btn-danger btn-sm', onClick: (item: any) => deleteItem(item) },
+    actionsConfig.push(
+        // { icon: 'ti ti-check', class: 'btn btn-success btn-sm', onClick: (item: any) => {
+        //     showValidationModal(item);
+        //     } 
+        // },
+    { icon: 'ti ti-pencil', class: 'btn btn-warning btn-sm', onClick: (item: any) => EditItem(item) },
+    { icon: 'ti ti-trash', class: 'btn btn-danger btn-sm', onClick: (item: any) => deleteItem(item),type: 'delete' },
     );
 }
 
@@ -46,18 +46,25 @@ const detailsItem = (item: any) => {
 
 };
 
-const showValidationModal = (item: any) => {
-    rhStore.setItemId(item.id);
+// const showValidationModal = (item: any) => {
+//     rhStore.setItemId(item.id);
 
-    $('#validate-modal').modal('show');
+//     $('#validate-modal').modal('show');
 
-};
+// };
 
-const RejectItem = (item: any) => {
+// const RejectItem = (item: any) => {
+//     console.log('Delete item', item);
+//     rhStore.setItemId(item.id);
+
+//     $('#reject-modal').modal('show');
+// };
+
+const EditItem = (item: any) => {
     console.log('Delete item', item);
-    rhStore.setItemId(item.id);
+    rhStore.setItem(item);
 
-    $('#reject-modal').modal('show');
+    $('#edit-leave').modal('show');
 };
 const deleteItem = (item: any) => {
     console.log('Delete item', item);
@@ -128,7 +135,7 @@ const filter = () => {
             </div>
         </div>
         <DataTable :items="filteredData" :headers="headers" :page-size=itemPerPage :actionsConfig="actionsConfig"
-            buttonType="simple" />
+            buttonType="simple" disabled='pending'/>
         <Modal title="Importation des données" id="details-modal" size="modal-lg" class-name="bring-to-front">
         </Modal>
     </div>

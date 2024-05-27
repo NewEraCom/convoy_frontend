@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { formater, helpers } from '@/utils';
+const role = localStorage.getItem('role');
 
 //const role = localStorage.getItem('role');
 type Item = {
@@ -204,6 +205,11 @@ watch(() => props.pageSize, () => {
                                         {{ helpers.calculateDifference(item, item.employee.working_hours)[0] }}
                                     </span>
                                 </span>
+                                <span v-if="header.type === 'days'">
+                                    {{ item[header.value] > 1 ? item[header.value] + ' Jours' :
+                                        item[header.value] + 'Jour'
+                                    }}
+                                </span>
 
                         </td>
                         <td class="text-center" v-if="header.isComplex && header.type === 'date_echantillion'">
@@ -223,12 +229,44 @@ watch(() => props.pageSize, () => {
                             </router-link>
                             <small class="fw-bold text-muted">Matricule : {{ item.matricule }}</small>
                         </td>
+                        <td v-if="header.isComplex && header.type === 'leave'"
+                                :class="index == 0 ? 'text-start' : 'text-center'">
+                                <div v-if="role == helpers.roles.RH">
+
+                                    <router-link :to="{ name: 'ProfileEmployee', params: { id: item.employee.id } }">
+                                        <h6 class="mb-1 fw-bold text-primary">{{ item.employee.first_name + ' ' +
+                            item.employee.last_name
+                                            }}</h6>
+                                    </router-link>
+                                    <small class="fw-bold text-muted">Matricule : {{ item.employee.matricule }}</small>
+                                </div>
+                                <div v-else>
+                                    <h6 class="mb-1 fw-bold text-primary">{{ item.employee.first_name + ' ' +
+                            item.employee.last_name
+                                        }}</h6>
+                                    <small class="fw-bold text-muted">Matricule : {{ item.employee.matricule }}</small>
+
+                                </div>
+                        </td>
+                        <td v-if="header.isComplex && header.type === 'fullname'"
+                            :class="index == 0 ? 'text-start' : 'text-center'">
+                            <router-link :to="{ name: 'StagiaireProfile', params: { id: item.id } }">
+                                <h6 class="mb-1 fw-bold text-primary">{{ item.prenom + ' ' + item.nom }}</h6>
+                            </router-link>
+                            <small class="fw-bold text-muted">Email : {{ item.email }}</small>
+                        </td>
+                        <td v-if="header.isComplex && header.type === 'recrute'"
+                            :class="index == 0 ? 'text-start' : 'text-center'">
+
+                            <h6 class="mb-1 fw-bold">{{ item.created_by.employee.first_name + ' '
+                        + item.created_by.employee.last_name }}</h6>
+                        </td>
 
 
 
                     </template>
 
-                    <td v-if="buttonType == 'simple'" class="text-center">
+                    <td v-if="buttonType == 'simple'" class="text-center" id="action-column">
                         <button v-for="  action   in   actionsConfig  " :key="action.icon" class="btn me-2"
                             :class="action.type == 'delete' ? (item.status == disabled ? action.class : 'btn btn-secondary btn-sm') : action.class"
                             @click="action.onClick(item)"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Modal } from '@/ui';
-import { rhService } from '@/services';
+import { internsService } from '@/services/v2/human_ressource';
 
 const props = defineProps({
     id: {
@@ -12,8 +12,8 @@ const props = defineProps({
 const isLoading = ref(false);
 
 const formData = ref({
-    stg: props.id,
-    file: null,
+    intern_id: props.id,
+    attachement: null,
     title: '',
     type: '',
     otherTitle: '',
@@ -30,7 +30,7 @@ const submit = async () => {
 
     console.log(formData.value);
     isLoading.value = true;
-    await rhService.UploadDocIntern(formData.value).then(() => {
+    await internsService.UploadDocIntern(formData.value).then(() => {
         $('#upload-documents').modal('hide');
     }).catch((error) => {
         console.error('Error during action execution', error);
@@ -84,7 +84,7 @@ const submit = async () => {
                             </label>
                             <input id="copie_rib" ref="copie_cnss" class="form-control" placeholder="Choisir le fichier"
                                 type="file" tabindex="0" name="copie_cnss" required
-                                @change="e => handleFileChange(e, 'file')" />
+                                @change="e => handleFileChange(e, 'attachement')" />
                         </div>
                     </div>
                 </div>

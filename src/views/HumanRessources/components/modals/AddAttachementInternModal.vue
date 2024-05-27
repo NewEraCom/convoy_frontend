@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Modal } from '@/ui';
-import { rhService } from '@/services';
+import { internsService } from '@/services/v2/human_ressource';
 import { useToast } from 'vue-toastification';
-import { useRhStore } from '@/store';
+import { useHrStore } from '@/store';
 
 const toast = useToast();
-const rhStore = useRhStore();
+const rhStore = useHrStore();
 
 const props = defineProps({
     id: {
@@ -28,9 +28,11 @@ const submit = async () => {
     formData.value.attachement = rhStore.attachement;
     console.log(formData.value);
     isLoading.value = true;
-    await rhService.updateAttachement(props.id, formData.value).then(() => {
-        $('#upload-attachement').modal('hide');
-        toast.success('Document ajouté avec succès');
+    await internsService.updateAttachement(props.id, formData.value).then((res) => {
+       
+            $('#upload-attachement').modal('hide');
+            toast.success('Document ajouté avec succès'); 
+        
     }).catch((error) => {
         console.error('Error during action execution', error);
         toast.error('Erreur lors de l\'ajout du document');

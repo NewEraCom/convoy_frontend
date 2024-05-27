@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref,watch } from 'vue';
 import { Modal, CustomSelect } from '@/ui';
 import { leaveService } from '@/services/v2/human_ressource';
 
-defineProps({
+const props = defineProps({
     employees: {
         type: Object,
         default: () => ({})
+    },
+    leave :{
+        type:Object,
+        required:true
     }
 });
 const isLoading = ref(false);
@@ -18,10 +22,26 @@ const formData = ref({
     duration: null,
     employee_id: '-',
     attachment: null,
-    deducted_sick_leave: null
+    deducted_sick_leave: null,
+    status:null,
+    validation_manager:null
+
 
 });
+watch(props,()=>{
+    if(props.leave){
+        formData.value.start_date = props.leave.start_date;
+        formData.value.end_date = props.leave.end_date;
+        formData.value.type = props.leave.type;
+        formData.value.duration = props.leave.duration;
+        formData.value.employee_id = props.leave.employee_id;
+        formData.value.attachment = props.leave.attachment;
+        formData.value.deducted_sick_leave = props.leave.deducted_sick_leave;
+        formData.value.status = props.leave.status;
+        formData.value.validation_manager = props.leave.validation_manager;
 
+    }
+});
 const handleFileChange = (e) => {
     formData.value.attachment = e.target.files[0];
 };
@@ -32,16 +52,16 @@ const submit = async () => {
     formData.value.employee_id = formData.value.employee_id.key;
     
     
-    await leaveService.addLeave(formData.value).then(() => {
+    await leaveService.editLeave(formData.value,props.leave.id).then(() => {
         isLoading.value = false;
-        $('#addNewLeave').modal('hide');
+        $('#edit-leave').modal('hide');
     }).catch(() => {
         isLoading.value = false;
     });
 };
 </script>
 <template>
-    <Modal id="addNewLeave" title="Ajouter un nouveau congé" size="modal-xl">
+    <Modal id="edit-leave" title="Edit Congé" size="modal-xl">
         <form @submit.prevent="submit" enctype="multipart/form-data">
             <div class="modal-body">
                 <div class="row">
@@ -88,7 +108,6 @@ const submit = async () => {
                                 tabindex="0" id="duree" v-model="formData.duration" required />
                         </div>
                     </div>
-
                     <div v-if="formData.type == 'maladie'" class="col-sm-6">
                         <div class="mb-3">
                             <label for="attachemet" class="form-label">Attachement (Certificat médical, Email de
@@ -126,7 +145,7 @@ const submit = async () => {
                 <button type="button" class="btn btn-label-outline-dark" data-bs-dismiss="modal">
                     Fermer
                 </button>
-                <button type="submit" :disabled="isLoading" class="btn btn-primary">
+                <button type="submit" :disabled="isLoading" class="btn btn-primary" v-if="formData.status != 'approved' && formData.validation_manager != 'approved'">
                     <span v-if="isLoading" class="d-flex align-items-center">
                         <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                             <span class="visually-hidden">Loading...</span>

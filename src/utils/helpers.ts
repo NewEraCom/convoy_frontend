@@ -137,10 +137,14 @@ const returnBadge = (item: any): any[] => {
 			return ['badge bg-label-success', 'Livré'];
 		case 'active':
 			return ['badge bg-label-success', 'Active'];
+		case 'inactive':
+			return ['badge bg-label-warning', 'Inactif'];
 		case 'in stock':
 			return ['badge bg-label-warning', 'En Stock'];
 		case 'approved':
 			return ['badge bg-label-success', 'Approuvé'];
+		case 'rejected':
+			return ['badge bg-label-danger', 'Rejetée'];
 		case 'disapproved':
 			return ['badge bg-label-danger', 'Désapprouvé'];
 		case 'closed':

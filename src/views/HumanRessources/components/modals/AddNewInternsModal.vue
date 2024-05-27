@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Modal } from '@/ui';
-import { rhService } from '@/services';
+import { internsService } from '@/services/v2/human_ressource';
 
 const isLoading = ref(false);
 
@@ -48,7 +48,7 @@ const handleFileChange = (e, value) => {
 const submit = async () => {
     console.log('submit');
     isLoading.value = true;
-    await rhService.addInterns(formData).then(() => {
+    await internsService.addInterns(formData).then(() => {
         console.log('Employee added');
         $('#addNewInterns').modal('hide');
     }).catch((error) => {

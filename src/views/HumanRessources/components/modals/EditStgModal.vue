@@ -2,7 +2,7 @@
 import {  ref } from 'vue';
 import { Modal } from '@/ui';
 import { watch } from 'vue';
-import {rhService} from '@/services';
+import {internsService} from '@/services/v2/human_ressource';
 
 
 const props = defineProps(['stg']);
@@ -60,7 +60,7 @@ const submit = async () => {
     if(nom.value != '' && prenom.value != '' && tel.value != '' && email.value!='' 
     && cin.value != '' && adresse.value!='' && status.value!='' && diplome.value!='' && poste.value!='' ){
 
-        rhService.updateIntern(props.stg.id,formData).then((response) => {
+        internsService.updateIntern(props.stg.id,formData).then((response) => {
             console.log(response);
             resetFormFields();
         }).catch((error) => {
@@ -140,8 +140,8 @@ const resetFormFields = () => {
                                 <div class="mb-3">
                                     <label for="nameEx" class="form-label">Status</label>
                                     <select name="" id="" class="form-select" required v-model="status">
-                                <option value="1">Actif</option>
-                                <option value="0">Inactif</option>
+                                <option value="approved">Actif</option>
+                                <option value="pending">Inactif</option>
                             </select>
                                 </div>
                             </div>

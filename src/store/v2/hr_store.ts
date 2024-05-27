@@ -3,7 +3,10 @@ import { defineStore } from 'pinia';
 
 export const useHrStore = defineStore('HrStore', {
     state: () => ({
-        leaves: null,
+        leaves: {
+            data:null,
+            stats:null
+        },
         leavesStats: null,
         employees: null,
         employee: null,
@@ -15,6 +18,18 @@ export const useHrStore = defineStore('HrStore', {
             stats: null,
         },
         ItemId:null,
+        pointages: null,
+        interns: {
+            data: null,
+            stats: null,
+        },
+        Item:null,
+        intern: null,
+        attachement:null,
+        recrutement: {
+            data: null,
+            stats: null,
+        },
 
     }),
     actions: {
@@ -37,13 +52,15 @@ export const useHrStore = defineStore('HrStore', {
             };
         },
         setLeaves(data) {
-            this.leaves = data;
-            this.leavesStats = {
-                pending: data.filter(item => item.status === 'pending').length ?? 0,
-                approved: data.filter(item => item.status === 'approved').length ?? 0,
-                rejected: data.filter(item => item.status === 'rejected').length ?? 0,
-                total: data.length ?? 0
+            this.leaves.data = data;
+            this.leaves.stats = {
+                total: data.length,
+                accepted: data.filter((e: any) => e.status === 'approved').length,
+                pending: data.filter((e: any) => e.status === 'pending').length,
+                sick: data.filter((e: any) => e.type === 'maladie').length,
             };
+            console.log(this.leaves);
+            
         },
         resetLeaves() {
             this.leaves = null;
@@ -105,11 +122,62 @@ export const useHrStore = defineStore('HrStore', {
         setItemId(id: number) {
             this.ItemId = id;
         },
+        setItem(id: number) {
+            this.Item = id;
+        },
+        clearItem(){
+            this.Item = null;
+        },
         pushLeave(data: any) {
-            this.leaves.push(data);
+            this.leaves.data?.unshift(data);
+            this.leaves.stats = {
+                total: this.leaves.data.length,
+                accepted: this.leaves.data.filter((e: any) => e.status === 'approved').length,
+                pending: this.leaves.data.filter((e: any) => e.status === 'pending').length,
+                sick: this.leaves.data.filter((e: any) => e.type === 'maladie').length,
+            };
         },
         pushEmployee(data: any) {
             this.employees.push(data);
+        },
+        setPointages(data: any) {
+            this.pointages = data;
+        },
+        addPointage(pointage: any) {
+            this.pointages?.push(pointage);
+            console.log(this.pointages);
+            
+        },
+        setInterns(data: any) {
+            this.interns.data = data;
+            this.interns.stats = {
+                total: data.length,
+                actif: data.filter((e: any) => e.status === 'approved').length,
+                inactif: data.filter((e: any) => e.status === 'pending').length,
+                potentialHiring: data.filter((e: any) => e.potentiel == '1').length,
+            };
+            console.log(this.interns);
+            
+        },
+        pushIntern(data: any) {
+            this.interns.data?.push(data);
+            this.interns.stats = {
+                total: this.interns.data.length,
+                actif: this.interns.data.filter((e: any) => e.status === 'approved').length,
+                inactif: this.interns.data.filter((e: any) => e.status === 'pending').length,
+                potentialHiring: this.interns.data.filter((e: any) => e.potentiel == '1').length,
+            };
+        },
+        setAttachement(data: any) {
+            this.attachement = data;
+        },
+        setRecrutement(data: any) {
+            this.recrutement.data = data;
+            this.recrutement.stats = {
+                total: data.length,
+                pending: data.filter((e: any) => e.status === 'pending').length,
+                accepted: data.filter((e: any) => e.status === 'approved').length,
+            };
         },
     }
 });

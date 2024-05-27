@@ -99,6 +99,16 @@ const submit = async () => {
                                 tabindex="0" required />
                         </div>
                     </div>
+                    <div class="col-sm-12">
+                        <div class="mb-3">
+                            <label for="phone_no" class="form-label">E-mail
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input id="phone_no" v-model="formData.email" class="form-control"
+                                placeholder="Entre l'email" type="email" minlength="10"
+                                tabindex="0" required />
+                        </div>
+                    </div>
                     <div class="col-sm-6">
                         <div class="mb-3">
                             <label for="departement" class="form-label">Département

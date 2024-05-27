@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Modal } from '@/ui';
-import { rhService } from '@/services';
+import { employeeService } from '@/services/v2/human_ressource';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
@@ -26,7 +26,7 @@ const submit = async () => {
     fd.append('date', formData.value.date);
 
     try {
-        await rhService.importPointage(fd);
+        await employeeService.importPointage(fd);
         isLoading.value = false;
         $('#importPointage').modal('hide');
         toast.success('Pointage importé avec succès');
@@ -41,7 +41,7 @@ const submit = async () => {
 
 const downloadFile = async () => {
     try {
-        const response = await rhService.downloadFile();
+        const response = await employeeService.downloadFile();
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;

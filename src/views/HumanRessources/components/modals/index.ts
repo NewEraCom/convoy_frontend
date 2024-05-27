@@ -7,7 +7,7 @@ import AddNewRecruitmentModal from './AddNewRecruitmentModal.vue';
 import AddDemandeRhModal from './AddDemandeRhModal.vue';
 import AddPaieModal from './AddPaieModal.vue';
 import AddSalaryAdvanceModal from './AddSalaryAdvanceModal.vue';
-import Validate from './ValidateConge.vue';
+import Validate from './Validate.vue';
 import EditSalaryModal from './EditSalaryModal.vue';
 import AugementationSalaryModal from './AugementationSalaryModal.vue';
 import EditLeavePerMonthModal from './EditLeavePerMonthModal.vue';
@@ -30,7 +30,8 @@ import AddDocsInternModal from './AddDocsInternModal.vue';
 import EditWorkerModal from './EditWorkerModal.vue';
 import ImportPointageModal from './ImportPointageModal.vue';
 import AddAttachementInternModal from './AddAttachementInternModal.vue';
-
+import AffectEmpProjectModal from './AffectEmpProjectModal.vue';
+import EditLeaveModal from './EditLeaveModal.vue';
 export {
     AddNewEmployeeModal,
     AddPointageModal,
@@ -63,5 +64,7 @@ export {
     AddDocsInternModal,
     EditWorkerModal,
     AddAttachementInternModal,
-    ImportPointageModal
+    ImportPointageModal,
+    AffectEmpProjectModal,
+    EditLeaveModal
 };
