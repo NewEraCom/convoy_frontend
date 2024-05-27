@@ -19,9 +19,11 @@ export const useSharedStore = defineStore('ShareStore', {
             loading: false,
         },
         fournisseurs: {
-            data: null,
+            data:null,
             stats: null,
             loading: false,
+            ItemId : 0,
+            item : null
         },
         soustraitants: {
             data: null,
@@ -114,6 +116,23 @@ export const useSharedStore = defineStore('ShareStore', {
             this.recruitment.stats = null;
             this.recruitment.loading = false;
         },
+        updatedTier(tier) {
+          this.fournisseurs.data = tier
+        },
+        validateTier(data){
+            const index = this.fournisseurs.data.findIndex(t => t.id === data.id);
+            if (index !== -1) {
+                this.fournisseurs.data[index] = data;
+            } else {
+                this.fournisseurs.data.push(data);
+            }
+        
+            this.updateStatistics();
+            console.log(this.fournisseurs.data);
+
+        },
+
+        
         setFournisseurs(data: any) {
             this.fournisseurs.data = data;
             this.fournisseurs.stats = {
@@ -123,15 +142,32 @@ export const useSharedStore = defineStore('ShareStore', {
             };
             this.fournisseurs.loading = true;
         },
+        
+updateStatistics() {
+    const data = this.fournisseurs.data;
+    // Recalculate statistics
+    this.fournisseurs.stats = {
+        total: data.length,
+        actif: data.filter((item) => item.is_active === 1).length,
+        inactif: data.filter((item) => item.is_active === 0).length,
+    };
+},
         clearFournisseurs() {
             this.fournisseurs.data = null;
             this.fournisseurs.stats = null;
             this.fournisseurs.loading = false;
         },
+  
         pushFournisseur(data: any) {
-            console.log(data);
-            this.fournisseurs.data.push(data);
-        },
+        
+            const existingfr = this.fournisseurs.data.find((t) => t.id === data.id)
+            if (existingfr) {
+              Object.assign(existingfr, data)
+            } else {
+              this.fournisseurs.data.push(data)
+            }
+          },
+
         deleteSoustraitant(id: number) {
             const itemIdToDelete = id;
             const indexToDelete = this.fournisseurs.data.findIndex((item: any) => item.id == itemIdToDelete);

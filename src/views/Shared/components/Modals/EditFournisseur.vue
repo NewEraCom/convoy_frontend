@@ -1,168 +1,170 @@
-<script setup lang="ts">
-import { ref } from 'vue';
+<script setup>
+import { ref ,watch,onMounted,defineProps} from 'vue';
 import { Modal } from '@/ui';
-import { sharedService } from '@/services';
-import { useToast } from 'vue-toastification';
+import { SousTraitantService, sharedService } from '@/services';
+// const props = defineProps({
+//     soustraitant :{
+//         type:Object,
+//         required:true
+//     }
+// });
 
-const toast = useToast();
+const props = defineProps(['soustraitant']);
+
+
+// const props = defineProps({
+//     soustraitant: {
+//         type: Array
+//     },
+// });
+// onMounted(async () => {
+//     await SousTraitantService.getSousTraitantById(props.soustraitant.id);
+
+// });
+console.log(props.soustraitant)
+let commercial_name = ref('');
+let commercial_phone = ref('');
+let commercial_email = ref('');
+let raison_social = ref('');
+let adresse = ref('');
+let ville = ref('');
+let fix = ref('');
+let m_paiement = ref('');
+let custom_paiement = ref('');
+let d_paiement = ref('');
+let phone_no_1 = ref('');
+let phone_no_2 = ref('');
+let email = ref('');
+
+let num_rc = ref('');
+let copie_rc = '';
+let num_ice = ref('');
+let copie_ice = '';
+let num_cnss = ref('');
+let copie_cnss = '';
+let livraison = ref('');
+let num_rf = ref('');
+let copie_rf = '';
+const handleRCChange = (event) => {
+    copie_rc = event.target.files[0];
+};
+const handleCNSSChange = (event) => {
+    copie_cnss = event.target.files[0];
+};
+const handleICEChange = (event) => {
+    copie_ice = event.target.files[0];
+};
+const handleRFChange = (event) => {
+    copie_rf = event.target.files[0];
+};
+
+function getValueOrDefault(value) {
+        return (value == null || value === 'null') ? '' : value;
+}
+// watch(props,()=>{
+if (props && props.soustraitant) {
+    commercial_name.value = getValueOrDefault(props.soustraitant.commercial_name);
+    commercial_phone.value = getValueOrDefault(props.soustraitant.commercial_phone);
+    commercial_email.value = getValueOrDefault(props.soustraitant.commercial_email);
+    raison_social.value = getValueOrDefault(props.soustraitant.raison_social);
+    adresse.value = getValueOrDefault(props.soustraitant.adresse);
+    ville.value = getValueOrDefault(props.soustraitant.ville);
+    fix.value = getValueOrDefault(props.soustraitant.fix);
+    m_paiement.value = getValueOrDefault(props.soustraitant.m_paiement);
+    d_paiement.value = getValueOrDefault(props.soustraitant.d_paiement);
+    phone_no_1.value = getValueOrDefault(props.soustraitant.phone_no_1);
+    phone_no_2.value = getValueOrDefault(props.soustraitant.phone_no_2);
+    email.value = getValueOrDefault(props.soustraitant.email);
+    num_cnss.value = getValueOrDefault(props.soustraitant.num_cnss);
+    num_ice.value = getValueOrDefault(props.soustraitant.num_ice);
+    num_rc.value = getValueOrDefault(props.soustraitant.num_rc);
+    num_rf.value = getValueOrDefault(props.soustraitant.num_rf);
+    livraison.value = getValueOrDefault(props.soustraitant.livraison);
+}
+
+
+
+//  });
+
 
 const isLoading = ref(false);
 
-const props = defineProps({
-    type: {
-        type: String,
-        default: 'add',
-    },
-});
-let m_paiement = ref('');
-let custom_paiement = ref('');
+const submit = async () => {
+ 
+    isLoading.value = true;
 
-const formData = ref({
-    commercial_name :'',
-    commercial_phone :'',
-    commercial_email :'',
-    raison_social :'',
-    adresse :'',
-    ville :'',
-    fix :'',
-    m_paiement :m_paiement.value === 'autre' ? custom_paiement.value : m_paiement.value,
-    d_paiement :'',
-    phone_no_1 :'',
-    phone_no_2 :'',
-    email :'',
-    num_cnss :'',
-    num_ice :'',
-    num_rc :'',
-    num_rf :'',
-    livraison :'',
-    copy_rc :'',
-    copy_rf :'',
-    copy_cnss :'',
-    copy_ice :'',
-    type: props.type,
-});
-const handleRCChange = (event) => {
-    formData.value.copy_rc = event.target.files[0];
-};
-const handleCNSSChange = (event) => {
-    formData.value.copy_cnss = event.target.files[0];
-};
-const handleICEChange = (event) => {
-    formData.value.copy_ice = event.target.files[0];
-};
-const handleRFChange = (event) => {
-    formData.value.copy_rf = event.target.files[0];
-};
-const onSubmit = async () => {
+    const formData = new FormData();
+    formData.append('commercial_name', commercial_name.value);
+    formData.append('commercial_phone', commercial_phone.value);
+    formData.append('commercial_email', commercial_email.value);
+    formData.append('raison_social', raison_social.value);
+    formData.append('adresse', adresse.value);
+    formData.append('ville', ville.value);
+    formData.append('fix', fix.value);
+    formData.append('d_paiment', d_paiement.value);
+    formData.append(
+        'm_paiment',
+        m_paiement.value === 'autre' ? custom_paiement.value : m_paiement.value
+    );
+    formData.append('email', email.value);
+    formData.append('phone_no_1', phone_no_1.value);
+    formData.append('phone_no_2', phone_no_2.value);
+    formData.append('num_ice', num_ice.value);
+    formData.append('num_cnss', num_cnss.value);
+    formData.append('num_rc', num_rc.value);
+    formData.append('num_rf', num_rf.value);
+    formData.append('livraison', livraison.value);
+    formData.append('copy_cnss', copie_cnss);
+    formData.append('copy_ice', copie_ice);
+    formData.append('copy_rc', copie_rc);
+    formData.append('copy_rf', copie_rf);
 
-    await sharedService.createTier(formData.value).then(() => {
-        $('#addSoustraitant').modal('hide');
-        toast.success('Sous-traitant ajouté avec succès');
-    }).catch((error) => {
-        console.log(error);
-        toast.error(error);
-    }).finally(() => {
-        isLoading.value = false;
-    });
+    try{
+       const res = await SousTraitantService.updateTier(formData,props.soustraitant.id)
+            if(res){
+                console.log(res);
+            }
+                resetFormFields();
+            }catch(error){
+                console.log(error);
+            };
+   
 };
 
+const resetFormFields = () => {
+    isLoading.value = false;
+    $('#edit-st').modal('hide');
+};
+
+// function checkOther() {
+//         if (m_paiement.value === 'autre') {
+//             this.showOther = true;
+//         } else {
+//             this.showOther = false;
+//             this.otherMethod = ''; // Réinitialiser le champ de saisie si une autre option est sélectionnée
+//         }
+//     }
 </script>
 
 <template>
-    <Modal id="addSoustraitant" title="Nouveau Sous-traitant" size="modal-xl">
-        <form @submit.prevent="onSubmit">
-            <!-- <div class="modal-body">
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <label for="raison_social" class="mb-2">Raison sociale <span
-                                class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="raison_social" v-model="formData.raison_social"
-                            placeholder="Entre le nom de la société" required />
-                    </div>
-                    <div class="col-4 mb-3">
-                        <label for="city" class="mb-2">Ville <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="city" v-model="formData.ville"
-                            placeholder="Entrez la ville" required />
-                    </div>
-                    <div class="col-8 mb-3">
-                        <label for="adresse" class="mb-2">Adresse <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="adresse" v-model="formData.adresse"
-                            placeholder="Entrez l'adresse" required />
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label for="email" class="mb-2">Adresse e-mail <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="email" v-model="formData.email"
-                            placeholder="Entrez l'adresse e-mail" required />
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label for="phone_no" class="mb-2">Numéro de téléphone <span
-                                class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="phone_no" v-model="formData.phone_no_1"
-                            placeholder="Entrez le numéro de téléphone" required />
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label for="num_rc" class="mb-2">Numéro de RC <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="num_rc" v-model="formData.num_rc"
-                            placeholder="Entrez le numéro de RC" required />
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label for="num_ice" class="mb-2">Numéro de ICE <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="num_ice" v-model="formData.num_ice"
-                            placeholder="Entrez le numéro de ICE" required />
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label for="mode_paiement" class="mb-2">Mode de paiement <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="Default select example" v-model="formData.m_paiment"
-                            required>
-                            <option value="-">Selectionner le mode de paiement</option>
-                            <option value="cheque">Chèque</option>
-                            <option value="virement">Virement</option>
-                            <option value="espece">Espèce</option>
-                        </select>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label for="d_paiement" class="mb-2">Délai de paiement <span
-                                class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="d_paiement" v-model="formData.d_paiment"
-                            placeholder="Entrez le délai de paiement" required />
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label for="commerical_name" class="mb-2">Nom commercial <span
-                                class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="commerical_name" v-model="formData.commercial_name"
-                            placeholder="Entrez le nom commercial" required />
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label for="commercial_phone" class="mb-2">Numéro de téléphone de commercial <span
-                                class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="commercial_phone"
-                            v-model="formData.commercial_phone"
-                            placeholder="Entrez le numéro de téléphone de commercial" required />
-                    </div>
-                    <div class="col-12 mb-3">
-                        <label for="attestation" class="mb-2">Fichier à télécharger <span
-                                class="text-danger">*</span></label>
-                        <input type="file" class="form-control" id="attestation" ref="formData.commercial_phone"
-                            placeholder="Entrez le délai de paiement" required />
-                    </div>
-                </div>
-            </div> -->
+    <Modal id="edit-st" title="Edit Sous Traitant" class-name="modal-xl" >
+        <form @submit.prevent="submit">
+            
             <div class="modal-body">
-                <div class="row" >
+                <div class="row" v-if="soustraitant != null">
                     
                     <div class="col-sm-12">
                         <div class="mb-3">
                             <label for="nom" class="form-label">Nom </label>
                             <input
                                 id="nom"
-                                v-model="formData.commercial_name"
+                                v-model="commercial_name"
                                 class="form-control"
                                 placeholder="Entrez le nom"
                                 type="text"
                                 tabindex="0"
                                 autofocus
-                                required
+                                
                             />
                         </div>
                     </div>
@@ -174,12 +176,12 @@ const onSubmit = async () => {
                             >
                             <input
                                 id="phone_no"
-                                v-model="formData.commercial_phone"
+                                v-model="commercial_phone"
                                 class="form-control"
                                 placeholder="Entre le numéro de téléphone"
                                 type="text"
                                 tabindex="0"
-                                required
+                                
                             />
                         </div>
                     </div>
@@ -188,12 +190,12 @@ const onSubmit = async () => {
                             <label for="phone_no" class="form-label">Numéro de téléphone N°1</label>
                             <input
                                 id="phone_no"
-                                v-model="formData.phone_no_1"
+                                v-model="phone_no_1"
                                 class="form-control"
                                 placeholder="Entre le numéro de téléphone"
                                 type="text"
                                 tabindex="0"
-                                required
+                                
                             />
                         </div>
                     </div>
@@ -202,11 +204,11 @@ const onSubmit = async () => {
                             <label for="phone_no" class="form-label">Numéro de téléphone N°2</label>
                             <input
                                 id="phone_no"
-                                v-model="formData.phone_no_2"
+                                v-model="phone_no_2"
                                 class="form-control"
                                 placeholder="Entre le numéro de téléphone"
                                 type="text"
-                                required
+                                
                             />
                         </div>
                     </div>
@@ -215,12 +217,12 @@ const onSubmit = async () => {
                             <label for="prenon" class="form-label">Email</label>
                             <input
                                 id="prenon"
-                                v-model="formData.commercial_email"
+                                v-model="commercial_email"
                                 class="form-control"
                                 placeholder="Entrez le numero de tel"
                                 type="email"
                                 tabindex="0"
-                                required
+                                
                             />
                         </div>
                     </div>
@@ -233,8 +235,8 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.raison_social"
-                                required
+                                v-model="raison_social"
+                                
                             />
                         </div>
                     </div>
@@ -247,8 +249,8 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.adresse"
-                                required
+                                v-model="adresse"
+                                
                             />
                         </div>
                     </div>
@@ -261,8 +263,8 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.ville"
-                                required
+                                v-model="ville"
+                                
                             />
                         </div>
                     </div>
@@ -275,8 +277,8 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.fix"
-                                required
+                                v-model="fix"
+                                
                             />
                         </div>
                     </div>
@@ -284,16 +286,26 @@ const onSubmit = async () => {
                     <div class="col-sm-6">
                         <div class="mb-3">
                             <label for="nameEx" class="form-label">Methode de paiement</label>
-                            <select name="" id="" class="form-select" v-model="formData.m_paiement">
-                                <option value="virement">Virement</option>
+                            <select name="" id="" class="form-select" v-model="m_paiement">
+                                <option value="virement bancaire">Virement bancaire</option>
                                 <option value="cash">Cash</option>
+                                <option value="Chèque">Chèque</option>
 
                                 <option value="autre">Autre</option>
                             </select>
                         </div>
                     </div>
+                    <!-- <div v-if="showOther">
+    <div class="col-sm-6">
+        <div class="mb-3">
+            <label for="otherMethod" class="form-label">Autre méthode de paiement</label>
+            <input type="text" id="otherMethod" class="form-control" v-model="otherMethod">
+        </div>
+    </div>
+</div> -->
                     <div class="col-sm-6" v-if="m_paiement === 'autre'">
                         <div class="mb-3">
+                            <label for="prenon" class="form-label">Saisir la methode de paiement</label>
                             <input
                                 class="form-control"
                                 placeholder="Saisir la methode de paiement"
@@ -301,7 +313,7 @@ const onSubmit = async () => {
                                 tabindex="0"
                                 id="nameEx"
                                 v-model="custom_paiement"
-                                required
+                                
                                 max="12"
                             />
                         </div>
@@ -315,8 +327,8 @@ const onSubmit = async () => {
                                 type="date"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.d_paiement"
-                                required
+                                v-model="d_paiement"
+                                
                             />
                         </div>
                     </div>
@@ -330,8 +342,8 @@ const onSubmit = async () => {
                                 type="email"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.email"
-                                required
+                                v-model="email"
+                                
                             />
                         </div>
                     </div>
@@ -345,7 +357,7 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.num_cnss"
+                                v-model="num_cnss"
                                 
                             />
                         </div>
@@ -369,7 +381,7 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.num_ice"
+                                v-model="num_ice"
                                 
                             />
                         </div>
@@ -393,7 +405,7 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.num_rc"
+                                v-model="num_rc"
                                 
                             />
                         </div>
@@ -417,7 +429,7 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.num_rf"
+                                v-model="num_rf"
                                 
                             />
                         </div>
@@ -436,7 +448,7 @@ const onSubmit = async () => {
                 <div class="col-sm-6">
                         <div class="mb-3">
                             <label for="nameEx" class="form-label">Livraison</label>
-                            <select name="" id="" class="form-select" v-model="formData.livraison">
+                            <select name="" id="" class="form-select" v-model="livraison">
                                 <option value="1">Oui</option>
                                 <option value="0">Non</option>
                             </select>
@@ -446,7 +458,7 @@ const onSubmit = async () => {
                                 type="text"
                                 tabindex="0"
                                 id="nameEx"
-                                v-model="formData.livraison"
+                                v-model="livraison"
                                 
                             /> -->
                         </div>
@@ -458,9 +470,10 @@ const onSubmit = async () => {
                 </button>
                 <button type="submit" :disabled="isLoading" class="btn btn-primary">
                     <span v-if="isLoading" class="d-flex align-items-center">
-                        <div class="spinner-border spinner-border-sm text-white" role="status">
+                        <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
+                        Chargement...
                     </span>
                     <span v-else> Terminer</span>
                 </button>
@@ -468,3 +481,5 @@ const onSubmit = async () => {
         </form>
     </Modal>
 </template>
+
+<style></style>

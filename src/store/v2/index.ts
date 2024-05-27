@@ -3,3 +3,4 @@ export * from './finance_store';
 export * from './hr_store';
 export * from './portal_store';
 export * from './shared_store';
+export * from './logistics_store';

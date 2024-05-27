@@ -33,10 +33,10 @@ const redirectBasedOnRole = (role: string): void => {
 
 const roles = {
 	DEV: 'Dev',
-	SALES: 'Responsable d\'achats',
+	SALES: 'Sales',
 	BDM: 'Director Business Development',
 	CF: 'Chef de projet',
-	LOGISTICS: 'Responsable logistique',
+	LOGISTICS: 'Logistics',
 	RH: 'Responsable ressources humaines',
 	DG: 'Directeur general',
 	DS: 'Directeur support',
@@ -119,8 +119,14 @@ const returnBadge = (item: any): any[] => {
 			return ['badge bg-danger', 'Commerciale'];
 		case '1':
 			return ['badge bg-label-success', 'Actif'];
+		case true:
+			return ['badge bg-label-success', 'Actif'];
+		case 'true':
+			return ['badge bg-label-success', 'Actif'];
 		case '0':
 			return ['badge bg-label-warning', 'Inactif'];
+		case 'false':
+				return ['badge bg-label-warning', 'Inactif'];
 		case 'Conge Maladie':
 			return ['badge bg-label-warning', 'Congé Maladie'];
 		case 'Maladie':

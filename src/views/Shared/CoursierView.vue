@@ -81,6 +81,11 @@ const onEventClick = (event: any) => {
   border: 1px solid rgb(46, 62, 239);
   color: #fff;
 }
+.vuecal__event.coursier {
+  background-color: rgba(102, 107, 255, 0.9);
+  border: 1px solid rgb(46, 62, 239);
+  color: #fff;
+}
 
 .vuecal__event.meeting {
   background-color: rgb(0, 135, 20);
