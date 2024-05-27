@@ -242,14 +242,14 @@ const SalesMenu = [
     {
         id: 6,
         name: 'Fournisseur',
-        route: '/fournisseur',
+        route: '/shared/fournisseur',
         icon: 'ti ti-building-store',
         path: 'Fournisseur'
     },
     {
         id: 7,
         name: 'Sous-traitant',
-        route: '/soustraitant',
+        route: '/shared/soustraitant',
         icon: 'ti ti-forklift',
         path: 'Soustraitant'
     },
@@ -385,7 +385,7 @@ const LogisticsMenu = [
     {
         id: 8,
         name: 'Loyer',
-        route: '/rent',
+        route: '/logistics/louer',
         icon: 'ti ti-building',
         path: 'Rent'
     },

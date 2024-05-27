@@ -1,11 +1,15 @@
 import { api } from '@/utils';
-import { useRhStore, useSharedStore } from '@/store';
+import { useRhStore } from '@/store';
+import { useSharedStore } from '@/store/v2';
 
 const createEvent = async (data: any) => {
     try {
-        const response = await api().post('/events/create', data);
+        const response = await api().post('/event', data);
         const sharedStore = useSharedStore();
-        sharedStore.addEvents(response.data.event);
+        if(response.status){
+            sharedStore.addEvents(response.data.event);
+            return response;
+        }
         return response;
     } catch (error) {
         return Promise.reject(error);

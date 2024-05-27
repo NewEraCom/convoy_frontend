@@ -1,16 +1,24 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { formater, helpers } from '@/utils';
 import { PersonalInfoCanva, AddressCanva, CoordonneesInfoCanva } from './componenets';
-const user = ref(null);
+import { usePortalStore } from '@/store';
+import { portalService } from '@/services';
 
-onMounted(() => {
-    user.value = JSON.parse(localStorage.getItem('user'));
+const portalStore = usePortalStore();
+
+const employee = ref(computed(() => portalStore.employee));
+
+onMounted(async () => {
+    await portalService.getCurrentEmployee();
 });
+
+
+
 </script>
 
 <template>
-    <div class="flex-grow-2 container-md mt-3 mb-5" v-if="user">
+    <div class="flex-grow-2 container-md mt-3 mb-5" v-if="employee">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
@@ -19,7 +27,12 @@ onMounted(() => {
                 <li class="breadcrumb-item active">Informations personnelles</li>
             </ol>
         </nav>
-        <div class="row gy-4 mb-4" v-if="user">
+        <!--         <div style="height: 800px;">
+            <whereby-embed style="height: 800px;"
+                room="https://neweracom.whereby.com/a23cc19c-e9a0-45c3-9360-81ffe8a51986?roomKey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZWV0aW5nSWQiOiI4NjE4MjczNyIsInJvb21SZWZlcmVuY2UiOnsicm9vbU5hbWUiOiIvYTIzY2MxOWMtZTlhMC00NWMzLTkzNjAtODFmZmU4YTUxOTg2Iiwib3JnYW5pemF0aW9uSWQiOiIyMzM0MjkifSwiaXNzIjoiaHR0cHM6Ly9hY2NvdW50cy5zcnYud2hlcmVieS5jb20iLCJpYXQiOjE3MTU3MDkyMDMsInJvb21LZXlUeXBlIjoibWVldGluZ0hvc3QifQ.2Th5dlxLGlaWDspBEe8tRhmkm69SZ1UGLDtp1jysiPw" />
+        </div> -->
+
+        <div class="row gy-4 mb-4" v-if="employee">
             <div class="col-12 d-flex align-items-center">
                 <h6 class="m-0">Informations personnelles</h6>
                 <button class="btn btn-outline-primary btn-sm ms-auto" type="button" data-bs-toggle="offcanvas"
@@ -27,7 +40,7 @@ onMounted(() => {
                     <i class="ti ti-pencil me-2"></i>
                     Modifier
                 </button>
-                <PersonalInfoCanva :employee="user.employee" />
+                <PersonalInfoCanva :employee="employee" />
             </div>
             <div class="col-12 mt-4">
                 <div class="card shadow-none border">
@@ -36,10 +49,10 @@ onMounted(() => {
                             <div class="col-12 d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-primary">Compte bancaire</h6>
-                                    <span>RIB : {{ formater.formatRIB(String(user.employee.rib)) }}</span>
+                                    <span>RIB : {{ formater.formatRIB(String(employee.rib)) }}</span>
                                 </div>
                                 <div>
-                                    <img :src="helpers.bankName(user.employee.bank_name)[0]" height="92px" width="100px"
+                                    <img :src="helpers.bankName(employee.bank_name)[0]" height="92px" width="100px"
                                         style="object-fit: contain" />
                                 </div>
                             </div>
@@ -49,7 +62,7 @@ onMounted(() => {
                             <div class="col-12 d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-primary">Matricule CNSS</h6>
-                                    <span>{{ user.employee.cnss ?? 'N/A' }}</span>
+                                    <span>{{ employee.cnss ?? 'N/A' }}</span>
                                 </div>
                                 <div>
                                     <img src="@/assets/img/brands/logo_cnss.jpeg" height="92px" width="90px"
@@ -61,28 +74,28 @@ onMounted(() => {
                         <div class=" row">
                             <div class="col-12">
                                 <h6 class="text-primary">Etat Civil</h6>
-                                <span>{{ user.employee.situation_familiale ?? 'N/A' }}</span>
+                                <span>{{ employee.situation_familiale ?? 'N/A' }}</span>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Numéro CIN</h6>
-                                <span>{{ user.employee.cin ?? 'N/A' }}</span>
+                                <span>{{ employee.cin ?? 'N/A' }}</span>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Date de naissance</h6>
-                                <span>{{ user.employee.date_of_birth ?? 'N/A' }}</span>
+                                <span>{{ employee.date_of_birth ?? 'N/A' }}</span>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Genre</h6>
-                                <span>{{ user.employee.sexe ? formater.firstUpperCase(user.employee.sexe) : 'N/A'
+                                <span>{{ employee.sexe ? formater.firstUpperCase(employee.sexe) : 'N/A'
                                     }}</span>
                             </div>
                         </div>
@@ -96,7 +109,7 @@ onMounted(() => {
                     <i class="ti ti-pencil me-2"></i>
                     Modifier
                 </button>
-                <AddressCanva :employee="user.employee" />
+                <AddressCanva :employee="employee" />
             </div>
             <div class="col-12 mt-4">
                 <div class="card shadow-none border">
@@ -104,8 +117,8 @@ onMounted(() => {
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Adresse du domicile</h6>
-                                <p class="mb-2">{{ user.employee.address ?? 'N/A' }}</p>
-                                <p class="mb-0">{{ user.employee.city }}</p>
+                                <p class="mb-2">{{ employee.address ?? 'N/A' }}</p>
+                                <p class="mb-0">{{ employee.city }}</p>
                             </div>
                         </div>
                     </div>
@@ -118,7 +131,7 @@ onMounted(() => {
                     <i class="ti ti-pencil me-2"></i>
                     Modifier
                 </button>
-                <CoordonneesInfoCanva :employee="user.employee" :work-email="user.email" />
+                <CoordonneesInfoCanva :employee="employee" :work-email="email" />
             </div>
             <div class="col-12 mt-4">
                 <div class="card shadow-none border">
@@ -127,14 +140,14 @@ onMounted(() => {
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Adresse email de travail</h6>
-                                <span>{{ user.email ?? 'N/A' }}</span>
+                                <span>{{ employee.user.email ?? 'N/A' }}</span>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Adresse email personnel</h6>
-                                <span>{{ user.employee.email ?? 'N/A' }}</span>
+                                <span>{{ employee.email ?? 'N/A' }}</span>
                             </div>
                         </div>
                         <hr>
@@ -142,14 +155,14 @@ onMounted(() => {
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Téléphone de travail</h6>
-                                <span>{{ formater.phoneNumber(user.employee.flotte) ?? 'N/A' }}</span>
+                                <span>{{ formater.phoneNumber(employee.flotte) ?? 'N/A' }}</span>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Téléphone personnel</h6>
-                                <span>{{ formater.phoneNumber(user.employee.phone_no) ?? 'N/A' }}</span>
+                                <span>{{ formater.phoneNumber(employee.phone_no) ?? 'N/A' }}</span>
                             </div>
                         </div>
                     </div>
@@ -169,7 +182,7 @@ onMounted(() => {
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Copie de la CIN recto</h6>
-                                <small :class="user.employee.copie_cin ? '' : 'text-muted'">{{ user.employee.copie_cin
+                                <small :class="employee.copie_cin ? '' : 'text-muted'">{{ employee.copie_cin
         ?? 'Copie de la CIN recto non disponible' }}</small>
                             </div>
                         </div>
@@ -177,8 +190,8 @@ onMounted(() => {
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Copie de la CIN verso</h6>
-                                <small :class="user.employee.copie_cin_verso ? '' : 'text-muted'">{{
-        user.employee.copie_cin_verso ?? 'Copie de la CIN verso non disponible'
+                                <small :class="employee.copie_cin_verso ? '' : 'text-muted'">{{
+        employee.copie_cin_verso ?? 'Copie de la CIN verso non disponible'
     }}</small>
                             </div>
                         </div>
@@ -186,7 +199,7 @@ onMounted(() => {
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Copie de CNSS</h6>
-                                <small :class="user.employee.copie_cnss ? '' : 'text-muted'">{{ user.employee.copie_cnss
+                                <small :class="employee.copie_cnss ? '' : 'text-muted'">{{ employee.copie_cnss
         ?? 'Copie de CNSS non disponible' }}</small>
                             </div>
                         </div>
@@ -194,7 +207,7 @@ onMounted(() => {
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Copie de RIB</h6>
-                                <small :class="user.employee.copie_rib ? '' : 'text-muted'">{{ user.employee.copie_rib
+                                <small :class="employee.copie_rib ? '' : 'text-muted'">{{ employee.copie_rib
         ?? 'Copie de RIB non disponible' }}</small>
                             </div>
                         </div>
@@ -202,7 +215,7 @@ onMounted(() => {
                         <div class="row">
                             <div class="col-12">
                                 <h6 class="text-primary">Copie apptitude médicale</h6>
-                                <small :class="user.employee.copie_appt ? '' : 'text-muted'">{{ user.employee.copie_appt
+                                <small :class="employee.copie_appt ? '' : 'text-muted'">{{ employee.copie_appt
                                     ?? 'Copie apptitude médicale non disponible'
                                     }}</small>
                             </div>

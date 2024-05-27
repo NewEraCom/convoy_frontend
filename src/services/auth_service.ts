@@ -15,6 +15,7 @@ const login = async (formData: { email: string, password: string }) => {
     }
 };
 
+
 const logout = async () => {
     try {
         const response = await api().post('/auth/logout');

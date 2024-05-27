@@ -19,9 +19,13 @@ const setSavedUser = (res: any) => {
 	localStorage.setItem('isOnline', 'true');
 	localStorage.setItem('role', res.user.roles[0].name);
 	localStorage.setItem('token', res.token);
-
 };
 
+const updateSavedEmployee = (res: any) => {
+	const user = JSON.parse(localStorage.getItem('user') || '{}');
+	user.employee = res;
+	localStorage.setItem('user', JSON.stringify(user));
+};
 
 const redirectBasedOnRole = (role: string): void => {
 	router.push({ name: initialDashboard(role) });
@@ -29,11 +33,11 @@ const redirectBasedOnRole = (role: string): void => {
 
 const roles = {
 	DEV: 'Dev',
-	SALES: 'Responsable d\'achats',
+	SALES: 'Sales',
 	BDM: 'Director Business Development',
 	CF: 'Chef de projet',
-	LOGISTICS: 'Responsable logistique',
 	RH: 'Human Resource',
+	LOGISTICS: 'Logistics',
 	DG: 'Directeur general',
 	DS: 'Directeur support',
 	DO: 'Directeur des opérations',
@@ -115,8 +119,14 @@ const returnBadge = (item: any): any[] => {
 			return ['badge bg-danger', 'Commerciale'];
 		case '1':
 			return ['badge bg-label-success', 'Actif'];
+		case true:
+			return ['badge bg-label-success', 'Actif'];
+		case 'true':
+			return ['badge bg-label-success', 'Actif'];
 		case '0':
 			return ['badge bg-label-warning', 'Inactif'];
+		case 'false':
+				return ['badge bg-label-warning', 'Inactif'];
 		case 'Conge Maladie':
 			return ['badge bg-label-warning', 'Congé Maladie'];
 		case 'Maladie':
@@ -244,7 +254,7 @@ function bankName(bank: string) {
 		case 'CIH':
 			return [CIH, 'CIH Bank'];
 		case 'SOCIETE GENERALE':
-			return [SGM, 'Soceite Generale'];
+			return [SGM, 'Société Générale'];
 		case 'BMCI':
 			return [BMCI, 'BMCI Bank'];
 		case 'ATTIJARIWAFA BANK':
@@ -500,5 +510,6 @@ export const helpers = {
 	dateRegex,
 	numberToTextMAD,
 	closeModal,
-	isLastFiveDaysOfTheMonth
+	isLastFiveDaysOfTheMonth,
+	updateSavedEmployee
 };

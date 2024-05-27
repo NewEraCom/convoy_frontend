@@ -1,3 +1,5 @@
+import { helpers } from '@/utils';
+
 export const sharedRoutes = [
     {
         path: '/shared/leaves-request',
@@ -16,11 +18,44 @@ export const sharedRoutes = [
         },
     },
     {
-        path: '/shared/profile',
+        path: '/shared/profile/:id',
         name: 'ProfileView',
-        component: () => import('@/views/Shared/ProfileView.vue'),
+        component: () => import('@/views/Shared/components/Profile/ProfileView.vue'),
+        props: true,
         meta: {
             title: 'Profil',
+        },
+    },
+    // {
+    //     path: '/shared/profile',
+    //     name: 'ProfileView',
+    //     component: () => import('@/views/Shared/ProfileView.vue'),
+    //     meta: {
+    //         title: 'Profil',
+    //     },
+    // },
+    {
+        path: '/shared/fournisseur',
+        name: 'Fournisseur',
+        component: () => import('@/views/Shared/FournisseurView.vue'),
+        props: true,
+        meta: {
+            title: 'Fournisseur',
+            requiresAuth: true,
+            role: [helpers.roles.DG,helpers.roles.DO,helpers.roles.DS,helpers.roles.SALES]
+
+        },
+    },
+    {
+        path: '/shared/soustraitant',
+        name: 'Soustraitant',
+        component: () => import('@/views/Shared/SoustraitantView.vue'),
+        props: true,
+        meta: {
+            title: 'Sous-traitant',
+            requiresAuth: true,
+            role: [helpers.roles.DG,helpers.roles.DO,helpers.roles.DS,helpers.roles.SALES]
+
         },
     },
     {

@@ -9,7 +9,7 @@ type Item = {
 }
 
 type ActionButton = {
-    icon?: string;
+    icon?: string | ((item: Item) => void);
     class: string;
     type?: string;
     text?: string;
@@ -95,6 +95,16 @@ watch(() => props.pageSize, () => {
     currentPage.value = 1;
 });
 
+
+function getIcon(item, action) {
+      return typeof action.icon === 'function' ? action.icon(item) : action.icon;
+    }
+function getClass(item, action) {
+      if (action.type === 'delete') {
+        return item.status === this.disabled ? (typeof action.class === 'function' ? action.class(item) : action.class) : 'btn btn-secondary btn-sm';
+      }
+      return typeof action.class === 'function' ? action.class(item) : action.class;
+    }
 </script>
 
 <template>
@@ -132,7 +142,6 @@ watch(() => props.pageSize, () => {
                             <small class="fw-bold text-muted">Maitre ouvrage : {{ item.pre_project.maitre_ouvrage
                                 }}</small>
                         </td>
-
                         <td v-if="header.isComplex && header.type === 'client'" class="text-primary"
                             :class="index == 0 ? 'text-start' : 'text-center'">
                             <div class="d-flex align-items-center">
@@ -182,6 +191,9 @@ watch(() => props.pageSize, () => {
                                 </span>
                             </small>
                             <small v-if="header.type === 'text'">
+                                {{ item[header.value] }}
+                            </small>
+                            <small v-if="header.type === 'fournisseur'">
                                 {{ item[header.value] }}
                             </small>
                             <small v-if="header.type === 'phone'">
@@ -266,15 +278,18 @@ watch(() => props.pageSize, () => {
 
                     </template>
 
-                    <td v-if="buttonType == 'simple'" class="text-center" id="action-column">
-                        <button v-for="  action   in   actionsConfig  " :key="action.icon" class="btn me-2"
-                            :class="action.type == 'delete' ? (item.status == disabled ? action.class : 'btn btn-secondary btn-sm') : action.class"
-                            @click="action.onClick(item)"
-                            :disabled="action.type == 'delete' ? (item.status != disabled) : false">
-                            <i v-if="action.type == 'potential'"
-                                :class="item.potentiel === '1' ? 'ti ti-bookmark-filled' : 'ti ti-bookmark'"></i>
-                            <i v-else :class="action.icon"></i>
-                        </button>
+                    <td v-if="buttonType == 'simple'" class="text-center">
+                        <button
+          v-for="action in actionsConfig"
+          :key="action.text"
+          :class="[getClass(item, action), 'me-2']"
+          @click="() => action.onClick(item)"
+          :disabled="action.type === 'delete' ? (item.status !== disabled) : false"
+        >
+          <i v-if="action.type === 'potential'"
+             :class="item.potentiel === '1' ? 'ti ti-bookmark-filled' : 'ti ti-bookmark'"></i>
+          <i v-else :class="getIcon(item, action)"></i>
+        </button>
                     </td>
                     <td v-else class="text-center">
                         <div class="dropdown" v-if="actionsConfig.length > 0">

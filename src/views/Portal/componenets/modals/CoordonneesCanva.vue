@@ -1,18 +1,38 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { portalService } from '@/services';
 
 const props = defineProps({
     employee: Object,
     workEmail: String
 });
 
+const isLoading = ref(false);
 
 const formData = ref({
     email: props.employee.email,
-    work_email: props.workEmail,
     phone_no: props.employee.phone_no,
     flotte: props.employee.flotte,
 });
+
+
+const submitForm = () => {
+    isLoading.value = true;
+
+    const query = new FormData();
+
+    query.append('email', formData.value.email);
+    query.append('phone_no', formData.value.phone_no);
+    query.append('flotte', formData.value.flotte);
+
+    portalService.updateContactInfo(query)
+        .then(() => {
+            isLoading.value = false;
+        })
+        .catch(() => {
+            isLoading.value = false;
+        });
+};
 
 
 </script>
@@ -26,34 +46,27 @@ const formData = ref({
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body  mx-0 flex-grow-0">
-            <form action="">
+            <form @submit.prevent="submitForm">
                 <div class="row">
 
                     <div class="col-12">
                         <div class="mb-3">
                             <label for="adresse" class="form-label">Adresse email personnel</label>
-                            <input type="text" class="form-control" id="email" :value="formData.email"
+                            <input type="text" class="form-control" id="email" v-model="formData.email"
                                 placeholder="Enrtrer votre adresse">
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="mb-3">
-                            <label for="city" class="form-label">Adresse email professionnel</label>
-                            <input type="text" class="form-control" id="city" :value="formData.work_email"
-                                placeholder="Enrtrer votre ville">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
                             <label for="city" class="form-label">Numéro de téléphone personnel</label>
-                            <input type="text" class="form-control" id="city" :value="formData.phone_no"
+                            <input type="text" class="form-control" id="city" v-model="formData.phone_no"
                                 placeholder="Enrtrer votre ville">
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="mb-3">
                             <label for="city" class="form-label">Numéro de téléphone professionnel</label>
-                            <input type="text" class="form-control" id="city" :value="formData.flotte"
+                            <input type="text" class="form-control" id="city" v-model="formData.flotte"
                                 placeholder="Enrtrer votre ville">
                         </div>
                     </div>

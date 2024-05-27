@@ -6,6 +6,7 @@ const toast = useToast();
 
 const props = defineProps({
     title: String,
+    id: String,
     text: String,
     textButton: String,
     action: Function,
