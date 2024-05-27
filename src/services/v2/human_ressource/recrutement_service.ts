@@ -19,23 +19,7 @@ async getRecrutement () {
         console.error(error);
         return error;
     }
-},
-async addNewRecruitment (data: any, from: string | null) {
-    try {
-        const response = await api().post('rh/recrute/request', data);
-        if (response.status == 200) {
-            if (from === 'rh') {
-                const rhStore = useRhStore();
-                rhStore.pushRecruitment(response.data.recrutement);
-            } else {
-                const sharedStore = useSharedStore();
-                sharedStore.pushRecruitment(response.data.recrutement);
-            }
-        }
-    } catch (error) {
-        return Promise.reject(error);
-    }
-};
+}
 };
 
 export default recrutementService;
