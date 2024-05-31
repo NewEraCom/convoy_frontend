@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Modal, CustomSelect } from '@/ui';
-import { paieService } from '@/services/v2';
+import { ref, watch } from 'vue';
+import { Modal ,CustomSelect} from '@/ui';
+import { useHrStore } from '@/store';
+import { paieService } from '@/services';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
+const rhStore = useHrStore();
 
+const isLoading = ref(false);
 defineProps({
     employees: {
         type: Object,
@@ -13,36 +16,50 @@ defineProps({
     }
 });
 
-const isLoading = ref(false);
-
 const formData = ref({
     employee_id: '-',
     avance: null,
     deduction: null,
     start_payment: null,
-    restant:null
+    status: null,
+    approval_rh: null,
+    restant: null,
+});
+
+watch(() => rhStore.Item, () => {
+    if (rhStore.Item) {
+        formData.value.employee_id = rhStore.Item.employee.id;
+        formData.value.avance = rhStore.Item.avance;
+        formData.value.deduction = rhStore.Item.deduction;
+        formData.value.start_payment = rhStore.Item.start_payment;
+        formData.value.status = rhStore.Item.status;
+        formData.value.restant = rhStore.Item.restant;
+        formData.value.approval_rh = rhStore.Item.approval_rh;
+    }
 });
 
 const submit = async () => {
     isLoading.value = true;
-
-    formData.value.employee_id = formData.value.employee_id.key;
-    formData.value.restant = formData.value.avance;
-    await paieService.addSalaryAdvance(formData.value).then(() => {
-        isLoading.value = false;
-        $('#addSalaryAdvance').modal('hide');
-        toast.success('Avance sur salaire ajoutée avec succès');
-    }).catch(() => {
-        isLoading.value = false;
-        toast.error('Une erreur est survenue');
-    });
+    if (formData.value.approval_rh!='approved') {
+        formData.value.employee_id = formData.value.employee_id.key;
+        formData.value.restant = formData.value.avance;
+        await paieService.updateSalaryAdvance(rhStore.Item.id,formData.value).then(() => {
+            rhStore.Item = null;
+            $('#editSalaryAdvance').modal('hide');
+        }).catch((error) => {
+            console.error('Error during action execution', error);
+        }).finally(() => {
+            isLoading.value = false;
+        });
+    }else{
+        toast.error('Cette avance est déjà validée et ne peut pas être modifiée.');
+    }
 };
-
 
 
 </script>
 <template>
-    <Modal id="addSalaryAdvance" title="Ajouter une avance sur salaire" size="modal-md">
+    <Modal id="editSalaryAdvance" title="Edit l'avance sur salaire" size="modal-md">
         <form @submit.prevent="submit" enctype="multipart/form-data">
             <div class="modal-body">
                 <div class="row">
@@ -87,7 +104,7 @@ const submit = async () => {
                 <button type="button" class="btn btn-label-outline-dark" data-bs-dismiss="modal">
                     Fermer
                 </button>
-                <button type="submit" :disabled="isLoading" class="btn btn-primary">
+                <button type="submit" :disabled="isLoading" class="btn btn-primary" v-if="formData.approval_rh!='approved'">
                     <span v-if="isLoading" class="d-flex align-items-center">
                         <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -98,6 +115,5 @@ const submit = async () => {
                 </button>
             </div>
         </form>
-
     </Modal>
 </template>

@@ -137,6 +137,8 @@ const returnBadge = (item: any): any[] => {
 			return ['badge bg-label-warning', 'En attente'];
 		case 'on going':
 			return ['badge bg-label-info', 'En cours'];
+		case 'en cours':
+			return ['badge bg-label-warning', 'En cours'];
 		case 'on road':
 			return ['badge bg-label-primary', 'En route'];
 		case 'done':
@@ -147,6 +149,8 @@ const returnBadge = (item: any): any[] => {
 			return ['badge bg-label-success', 'Livré'];
 		case 'active':
 			return ['badge bg-label-success', 'Active'];
+		case 'demande':
+			return ['badge bg-label-info', 'Demandé'];
 		case 'inactive':
 			return ['badge bg-label-warning', 'Inactif'];
 		case 'in stock':
@@ -161,6 +165,8 @@ const returnBadge = (item: any): any[] => {
 			return ['badge bg-label-success', 'Fermé'];
 		case 'open':
 			return ['badge bg-label-warning', 'Ouvert'];
+		case 'validé':
+			return ['badge bg-label-success', 'validé'];
 		case 'paye':
 			return ['badge bg-label-success', 'Paye'];
 		case 'annule':
@@ -484,6 +490,9 @@ const isLastFiveDaysOfTheMonth = () => {
 const closeModal = (modalId: string) => {
 	$(`#${modalId}`).modal('hide');
 };
+const getRole = () => {
+	return localStorage.getItem('role');
+};
 
 export const helpers = {
 	isActiveRoute,
@@ -511,5 +520,6 @@ export const helpers = {
 	numberToTextMAD,
 	closeModal,
 	isLastFiveDaysOfTheMonth,
-	updateSavedEmployee
+	updateSavedEmployee,
+	getRole
 };

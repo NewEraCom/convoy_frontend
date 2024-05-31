@@ -10,7 +10,7 @@ import { DeleteModal, CardOneSkeleton } from '@/ui';
 
 const rhStore = useHrStore();
 
-const recrutement = ref(computed(() => rhStore.recrutement));
+let recrutement = ref(computed(() => rhStore.recrutement));
 
 onMounted(async () => {
   await recrutementService.getRecrutement();
@@ -19,7 +19,7 @@ onMounted(async () => {
 
 watch(() => rhStore.recrutement, (newValue) => {
   recrutement.value = newValue;
-}, { deep: true });
+});
 
 </script>
 <template>
@@ -83,10 +83,10 @@ watch(() => rhStore.recrutement, (newValue) => {
       </div>
     </div>
     <AddNewRecruitmentModal />
-    <!-- <DeleteModal title="Supprimer une demande de recrutement"
+    <DeleteModal title="Supprimer une demande de recrutement"
       text="Voulez-vous vraiment supprimer cette demande de recrutement ?" textButton="Oui, Supprimer"
-      :action="() => sharedService.deleteRecruitment('rh')"
-      message="La demande de recrutement a été supprimée avec succès" /> -->
+      :action="() => recrutementService.deleteRecruitment()"
+      message="La demande de recrutement a été supprimée avec succès" />
     <RecruitementDetailsModal />
 
   </div>

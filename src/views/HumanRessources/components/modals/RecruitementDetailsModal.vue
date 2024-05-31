@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Modal } from '@/ui';
-import { useSharedStore } from '@/store';
+import { useHrStore } from '@/store';
 import { helpers } from '@/utils';
 
 
-const sharedStore = useSharedStore();
+const rhStore = useHrStore();
 
 const formData = ref({
     user_id: '-',
@@ -17,15 +17,15 @@ const formData = ref({
     status: null,
 });
 
-watch(() => sharedStore.selectedItem, () => {
-    if (sharedStore.selectedItem) {
-        formData.value.user_id = sharedStore.selectedItem.user.id;
-        formData.value.user = sharedStore.selectedItem.user.employee.first_name + ' ' + sharedStore.selectedItem.user.employee.last_name;
-        formData.value.post = sharedStore.selectedItem.post_name;
-        formData.value.description = sharedStore.selectedItem.description;
-        formData.value.displome = sharedStore.selectedItem.diploma;
-        formData.value.status = sharedStore.selectedItem.status;
-        formData.value.experience = sharedStore.selectedItem.experience;
+watch(() => rhStore.Item, () => {
+    if (rhStore.Item) {
+        formData.value.user_id = rhStore.Item.created_by.id;
+        formData.value.user = rhStore.Item.created_by.employee.first_name + ' ' + rhStore.Item.created_by.employee.last_name;
+        formData.value.post = rhStore.Item.post_name;
+        formData.value.description = rhStore.Item.description;
+        formData.value.displome = rhStore.Item.diploma;
+        formData.value.status = rhStore.Item.status;
+        formData.value.experience = rhStore.Item.experience;
     }
 });
 

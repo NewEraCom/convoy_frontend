@@ -1,0 +1,157 @@
+<script lang="ts" setup>
+import { ref } from 'vue';
+import { Modal, CustomSelect } from '@/ui';
+import { eventService } from '@/services/v2';
+import { useToast } from 'vue-toastification';
+const toast = useToast();
+
+const isLoading = ref(false);
+
+const props = defineProps({
+  projects: {
+    type: Array,
+    required: true
+  }
+});
+
+let montantMax = ref();
+const formData = ref({
+    pre_project_id: '-',
+  montant: null,
+  recepteur_id: JSON.parse(localStorage.getItem('user')).id,
+  remark: null,
+  date_operation: Date(),
+  operation: 'sortie',
+  type: 'cash',
+  budget_id: '-'
+});
+
+const submit = async () => {
+  if (formData.value.pre_project_id == '-') {
+    toast.error('Veuillez choisir un project');
+    return;
+  }
+
+  isLoading.value = true;
+
+  formData.value.pre_project_id = formData.value.pre_project_id.key;
+  if (formData.value.montant > montantMax.value) {
+    toast.error('Le montant demandé est supérieur au montant disponible');
+    isLoading.value = false;
+    return;
+  }
+  console.log(formData.value);
+  
+  await eventService
+    .newCaisseOperation(formData.value)
+    .then(() => {
+      isLoading.value = false;
+      $('#newOperation').modal('hide');
+      toast.success('Demande de caisse ajoutée avec succès');
+
+      formData.value = {
+        pre_project_id: '-',
+        montant: null,
+        recepteur_id: JSON.parse(localStorage.getItem('user')).employee.id,
+        remark: null,
+        date_operation: Date(),
+        operation: 'sortie',
+        type: 'cash',
+        budget_id: '-'
+      };
+    })
+    .catch(() => {
+      isLoading.value = false;
+    });
+};
+const updateMontant = () => {
+  const selectedItem = props.projects
+    .filter((item:any) => item.pre_project_id == formData.value.pre_project_id.key)[0]
+    .pre_project.caisse.find((caisse) => caisse.id == formData.value.budget_id);
+  if (selectedItem) {
+    montantMax.value = selectedItem; // replace `montant` with the actual property name in your `caisse` object
+  }
+};
+</script>
+
+<template>
+  <Modal id="newOperation" title="Demande de caisse" size="modal-md">
+    <form @submit.prevent="submit">
+      <div class="modal-body">
+        <div class="row">
+          <div v-if="projects != null" class="col-12 mb-3">
+            <CustomSelect
+              v-model="formData.pre_project_id"
+              placeholder="Choisir un project"
+              label="Project"
+              :data="projects.map((item :any) => ({ key: item.pre_project.id, value: item.code }))"
+            />
+          </div>
+          <div v-if="formData.pre_project_id != '-'" class="mb-3">
+            <label for="itm" class="mb-2">Budget <span class="text-danger">*</span> </label>
+            <select
+              name=""
+              id=""
+              class="form-select"
+              v-model="formData.budget_id"
+              @change="updateMontant"
+            >
+              <option value="-">Choisir un Budget</option>
+              <option
+                v-for="itm in projects.filter((item) => item.id == formData.pre_project_id.key)[0]
+                  .pre_project.caisse"
+                :key="itm.id"
+                :value="itm.id"
+              >
+                {{ itm.designation }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-12 mb-3">
+            <label for="montant" class="mb-2"
+              >Montant<span class="text-danger fw-bold">*</span></label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="montant"
+              v-model="formData.montant"
+              placeholder="Entre le montant demande"
+              required
+            :disabled="montantMax && montantMax.montant < montantMax.montant_out"
+            />
+            <!-- :max="montantMax" -->
+            <small class="text-muted" v-if="montantMax"> Montant Max : {{ montantMax.montant }} MAD </small><br>
+            <small class="text-danger" v-if=" montantMax && montantMax.montant < montantMax.montant_out">
+              Cette caisse est consomée entiérement
+            </small>
+          </div>
+          <div class="col-12">
+            <textarea
+              v-model="formData.remark"
+              class="form-control"
+              rows="2"
+              placeholder="Remarque..."
+            >
+            </textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-label-outline-dark" data-bs-dismiss="modal">
+          Fermer
+        </button>
+        <button type="submit" class="btn btn-primary" :disabled="isLoading">
+          <span v-if="isLoading" class="d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm text-white" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </span>
+          <span v-else>Envoyer</span>
+        </button>
+      </div>
+    </form>
+  </Modal>
+</template>

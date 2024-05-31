@@ -82,5 +82,27 @@ export const sharedRoutes = [
             title: 'Salle de réunion',
         },
 
-    }
+    },
+    {
+        path: '/caisse-budget',
+        name: 'CaisseBudget',
+        component: () => import('@/views/Shared/CaisseBudgetView.vue'),
+        meta: {
+            title: 'Caisse',
+            requiresAuth: true,
+            // role: [helpers.roles.DG,helpers.roles.DO,helpers.roles.DS]
+
+        },
+    },
+    {
+        path: '/decaissement',
+        name: 'Caisse',
+        component: () => import('@/views/Shared/DecaissementView.vue'),
+        meta: {
+            title: 'Caisse',
+            requiresAuth: true,
+            // role: [helpers.roles.DG,helpers.roles.DO,helpers.roles.DS]
+
+        },
+    },
 ];

@@ -1,43 +1,49 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { DataTable } from '@/ui';
-import { formater } from '@/utils';
-import { useHrStore } from '@/store';
-
+import { formater, helpers } from '@/utils';
+import { useSharedStore } from '@/store/v2';
 
 const props = defineProps({
-    recruitments: {
+    caisse: {
         type: Array,
         required: true,
     },
 });
-const rhStore = useHrStore();
+const sharedStore = useSharedStore();
 const headers = [
-    { text: 'Créé par', value: 'created_by', isComplex: true, type: 'recrute' },
-    { text: 'Poste', value: 'post_name', type: 'text' },
-    { text: 'Diplôme', value: 'diploma', type: 'text' },
-    { text: 'Expérience', value: 'experience', type: 'text' },
-    { text: 'Date de création', value: 'created_at', type: 'datetime' },
+    { text: 'Récepteur/Émetteur', type: 'recepteur' ,isComplex:true },
+    { text: 'Montant', value: 'montant', type: 'currency' },
+    { text: 'Type d\'opération', value: 'operation', type: 'badge' },
+    { text: 'Date d\'opération', value: 'date_operation', type: 'date' },
     { text: 'Status', value: 'status', type: 'badge' },
 ];
 
 const actionsConfig = [
-    { icon: 'ti ti-eye', class: 'btn btn-primary btn-sm', onClick: (item: any) => editItem(item) },
-    { icon: 'ti ti-trash-filled', class: 'btn btn-danger btn-sm', onClick: (item: any) => deleteItem(item) }
+    {
+        icon: 'ti ti-eye', class: 'btn btn-primary btn-sm', onClick: (item: any) => {
+            sharedStore.setDetailsOperationCaisse(item);
+            $('#detailsOperation').modal('show');
+        }
+    },
+    { icon: 'ti ti-trash-filled', class: 'btn btn-danger btn-sm', onClick: (item: any) => deleteItem(item) },
+    {
+        icon: 'ti ti-check', class: 'btn btn-success btn-sm', onClick: (item: any) => validateItem(item),
+        condition: (item: any) => item.status === 'en cours' // Add this line
+    },
 ];
 
 
-const editItem = (item: any) => {
-    rhStore.Item = item;
-    $('#showRecruitement').modal('show');
-};
-
 const deleteItem = (item: any) => {
-    rhStore.setItemId(item.id);
+    sharedStore.setDetailsOperationCaisse(item);
     $('#deleteModal').modal('show');
 };
+const validateItem = (item: any) => {
+    sharedStore.setDetailsOperationCaisse(item);
+    $('#validateModal').modal('show');
+};
 
-const filteredData = ref(props.recruitments);
+const filteredData = ref(props.caisse);
 
 const searchQuery = ref('');
 const statusQuery = ref('-');
@@ -46,14 +52,13 @@ const endQuery = ref();
 const itemPerPage = ref(15);
 
 const filter = () => {
-    filteredData.value = props.recruitments.filter((item: any) => {
-        const combinedFields = `${item.user.employee.first_name} ${item.user.employee.last_name} ${item.post_name} ${item.diploma} ${item.experience}`.toLowerCase();
+    filteredData.value = props.caisse.filter((item: any) => {
+        const combinedFields = `${item.emetteur} ${item.type} ${item.recepteur?.first_name} ${item.recepteur?.last_name} ${item.recepteur?.matricule}`.toLowerCase();
         const searchWords = searchQuery.value.toLowerCase().split(' ');
         return searchWords.every(word => combinedFields.includes(word)) &&
-            (statusQuery.value === '-' || item.status === statusQuery.value) && (!startQuery.value || formater.startOfDay(item.created_at) >= formater.startOfDay(startQuery.value)) &&
+            (statusQuery.value === '-' || item.status == statusQuery.value) && (!startQuery.value || formater.startOfDay(item.created_at) >= formater.startOfDay(startQuery.value)) &&
             (!endQuery.value || formater.startOfDay(item.created_at) <= formater.startOfDay(endQuery.value));
     });
-
 };
 
 </script>
@@ -69,8 +74,8 @@ const filter = () => {
                         <select v-model="statusQuery" class="form-select ms-2 me-2 w-180" @change="filter">
                             <option value="-">Tout</option>
                             <option value="pending">En attente</option>
-                            <option value="accepted">Traitée</option>
-                            <option value="rejected">Rejetée</option>
+                            <option value="on going">En cours</option>
+                            <option value="done">Terminé</option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center ms-2">
@@ -100,7 +105,7 @@ const filter = () => {
             </div>
         </div>
         <DataTable :items="filteredData" :headers="headers" :page-size=itemPerPage :actionsConfig="actionsConfig"
-            button-type="simple" />
+            buttonType="simple" disabled="done"/>
     </div>
 </template>
 <style>

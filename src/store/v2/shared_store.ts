@@ -55,7 +55,15 @@ export const useSharedStore = defineStore('ShareStore', {
         Soustraitant: null,
         mainItem:null,
         selectedCaisse:null,
-        error:false
+        error:false,
+        budgetSiege:{
+            data:null,
+            stats:null
+        },
+        operation:{
+            data:null,
+            stats:null
+        }
     }),
     actions: {
         setEvents(data: any) {
@@ -70,7 +78,7 @@ export const useSharedStore = defineStore('ShareStore', {
                 };
                 this.events.push(item);
             });
-            console.log( this.events )
+            console.log( this.events );
         },
         addEvents(event: any) {
 
@@ -81,7 +89,7 @@ export const useSharedStore = defineStore('ShareStore', {
                 content: event.comment,
                 class: event.color,
             };
-            this.events.push(item);
+            this.events?.push(item);
         },
         setRhRequest(data: any) {
             this.rhRequest.data = data;
@@ -117,7 +125,7 @@ export const useSharedStore = defineStore('ShareStore', {
             this.recruitment.loading = false;
         },
         updatedTier(tier) {
-          this.fournisseurs.data = tier
+          this.fournisseurs.data = tier;
         },
         validateTier(data){
             const index = this.fournisseurs.data.findIndex(t => t.id === data.id);
@@ -160,11 +168,11 @@ updateStatistics() {
   
         pushFournisseur(data: any) {
         
-            const existingfr = this.fournisseurs.data.find((t) => t.id === data.id)
+            const existingfr = this.fournisseurs.data.find((t) => t.id === data.id);
             if (existingfr) {
-              Object.assign(existingfr, data)
+              Object.assign(existingfr, data);
             } else {
-              this.fournisseurs.data.push(data)
+              this.fournisseurs.data.push(data);
             }
           },
 
@@ -320,6 +328,49 @@ updateStatistics() {
         },
         setError() {
             this.error = true;
-        }
+        },
+        setBudgetSiege(data: any) {            
+            this.budgetSiege.data = data;
+            this.budgetSiege.stats = {
+                total: data.length,
+                count_siege: data.filter(caisse => caisse.pre_project.project.code === 'SIEGE').length,
+                total_budget: data.filter(caisse => caisse.pre_project.project.code === 'SIEGE').reduce((total, caisse) => total + parseInt(caisse.montant), 0),
+                count_projets: data.reduce((total, caisse) => total + parseInt(caisse.montant), 0),
+            };
+            console.log(this.budgetSiege.stats);
+            
+        },
+        pushBudgetSiege(data: any) {            
+            this.budgetSiege.data?.push(data);
+            this.budgetSiege.stats = {
+                total: this.budgetSiege.data.length,
+                count_siege: this.budgetSiege.data.filter(caisse => caisse.pre_project.project.code === 'SIEGE').length,
+                total_budget: this.budgetSiege.data.filter(caisse => caisse.pre_project.project.code === 'SIEGE').reduce((total, caisse) => total + parseInt(caisse.montant), 0),
+                count_projets: this.budgetSiege.data.reduce((total, caisse) => total + parseInt(caisse.montant), 0),
+            };
+            console.log(this.budgetSiege.stats);
+            
+        },
+        setOperationCaisse(data: any) {
+            this.operation.data = data;
+            this.operation.stats = {
+                requested: data.filter((item: any) => item.operation == 'sortie' && item.status == 'demande').length,
+                delivered: data.filter((item: any) => item.operation == 'sortie' && item.status == 'validé').length,
+                total: data.length,
+                ongoing: data.filter((item: any) => item.operation == 'sortie' && item.status == 'en cours').length,
+                
+            };
+            
+        },
+        clearOperation(){
+            this.operation.data = null;
+            this.operation.stats = null;
+        },
+        pushOperationCaisse(data: any) {
+            this.operation.data?.unshift(data);
+        },
+        setDetailsOperationCaisse(data: any) {
+            this.selectedItem = data;
+        },
     },
 });

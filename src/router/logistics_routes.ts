@@ -1,13 +1,5 @@
 export const logisticsRoutes = [
     {
-        path: '/logistics/decaissement',
-        name: 'Decaissement',
-        component: () => import('@/views/Logistics/DecaissementView.vue'),
-        meta: {
-            title: 'Decaissement',
-        },
-    },
-    {
         path:'/logistics/louer',
         name:'Louer',
         component: () => import('@/views/Logistics/Loyer/LouerView.vue'),

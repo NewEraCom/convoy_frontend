@@ -85,15 +85,15 @@ export const hrRoutes = [
             role: [helpers.roles.RH, helpers.roles.DS]
         },
     },
-    // {
-    //     path: '/demandes-rh',
-    //     name: 'DemandesRH',
-    //     component: () => import('@/views/HumanRessources/DemandesRhView.vue'),
-    //     meta: {
-    //         title: 'Demandes RH',
-    //         role: [helpers.roles.RH, helpers.roles.DS]
-    //     },
-    // },
+    {
+        path: '/demandes-rh',
+        name: 'DemandesRH',
+        component: () => import('@/views/HumanRessources/DemandesRhView.vue'),
+        meta: {
+            title: 'Demandes RH',
+            role: [helpers.roles.RH, helpers.roles.DS]
+        },
+    },
     // {
     //     path: '/contracts',
     //     name: 'Contracts',
@@ -112,15 +112,15 @@ export const hrRoutes = [
     //         role: [helpers.roles.RH, helpers.roles.DS]
     //     },
     // },
-    // {
-    //     path: '/salary-advance',
-    //     name: 'SalaryAdvance',
-    //     component: () => import('@/views/HumanRessources/SalaryAdvanceView.vue'),
-    //     meta: {
-    //         title: 'Avance sur salaire',
-    //         role: [helpers.roles.RH, helpers.roles.DS]
-    //     },
-    // },
+    {
+        path: '/salary-advance',
+        name: 'SalaryAdvance',
+        component: () => import('@/views/HumanRessources/SalaryAdvanceView.vue'),
+        meta: {
+            title: 'Avance sur salaire',
+            role: [helpers.roles.RH, helpers.roles.DS]
+        },
+    },
     // {
     //     path: '/worker/profile/:id',
     //     name: 'WorkerEmployee',

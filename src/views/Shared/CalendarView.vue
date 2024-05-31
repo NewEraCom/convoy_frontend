@@ -7,11 +7,11 @@ import { eventService } from '@/services/v2';
 import { useHrStore } from './../../store/v2/hr_store';
 import { useSharedStore } from '../../store/v2/shared_store';
 
-import ModalReserve from './components/Modals/ModalReserve.vue'
+import {ModalReserve} from './components/Modals';
 
 const sharedStore = useSharedStore();
-const hrStore = useHrStore()
-const employees = ref(computed(() => hrStore.employees))
+const hrStore = useHrStore();
+const employees = ref(computed(() => hrStore.employees));
 const minDate = new Date();
 const events = ref(computed(() => sharedStore.events));
 watch(events, () => {
@@ -19,7 +19,7 @@ watch(events, () => {
 }, { deep: true });
 
 onMounted(async () => {
-    await employeeService.getEmployees();
+    await employeeService.getActiveEmployees();
    await eventService.getEvent('event');
 });
 const onEventClick = (event: any) => {

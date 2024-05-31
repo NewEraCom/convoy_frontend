@@ -1,4 +1,3 @@
-import { vue } from '@vitejs/plugin-vue';
 import TheSideBar from './TheSideBar.vue';
 import TheTopBar from './TheTopBar.vue';
 import DataTable from './DataTable.vue';
@@ -12,6 +11,7 @@ import OutOfStockTable from './OutOfStockTable.vue';
 import ListItem from './ListItem.vue';
 import ListItemSkeleton from './ListItemSkeleton.vue';
 import CautionOut from './CautionOut.vue';
+import CardOneSkeleton from './CardOneSkeleton.vue';
 
 export * from './cards';
 export * from './modals';
@@ -30,5 +30,6 @@ export {
     OutOfStockTable,
     ListItem,
     ListItemSkeleton,
-    CautionOut
+    CautionOut,
+    CardOneSkeleton
 };

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Modal, CustomSelect } from '@/ui';
-import { rhService } from '@/services';
+import { demandeService } from '@/services/v2';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
@@ -18,8 +18,9 @@ const isLoading = ref(false);
 const formData = ref({
     employee_id: '-',
     otherTitle: null,
-    description: null,
-    title: '-',
+    raison: null,
+    titre: '-',
+    status:'pending'
 
 });
 
@@ -27,8 +28,11 @@ const submit = async () => {
 
     formData.value.employee_id = formData.value.employee_id.key;
     console.log(formData.value);
+    if (formData.value.titre == 'Autre') {
+        formData.value.titre = formData.value.otherTitle;
+    }
     isLoading.value = true;
-    await rhService.addDemandeRh(formData.value).then(() => {
+    await demandeService.addDemandeRh(formData.value).then(() => {
         $('#addDemandeRh').modal('hide');
         toast.success('Demande ajoutée avec succès');
     }).catch((error) => {
@@ -46,18 +50,18 @@ const submit = async () => {
                 <div class="row">
                     <div v-if="employees != null" class="col-12 mb-3">
                         <CustomSelect v-model="formData.employee_id" placeholder="Choisir un employee" label="Employee"
-                            :data="employees.filter(item => item.status == 1).map((item) => ({
-            key: item.id,
-            value: item.first_name + ' ' + item.last_name
-        }))
-            " />
+                            :data="employees.filter(item => item.status == 'active').map((item) => ({
+                            key: item.id,
+                            value: item.first_name + ' ' + item.last_name
+                        }))
+                            " />
                     </div>
 
                     <div class="col-sm-12">
                         <div class="mb-3">
                             <label for="nameEx" class="form-label">Type d'attestation <span
                                     class="text-danger">*</span></label>
-                            <select name="" id="" class="form-select" required v-model="formData.title">
+                            <select name="" id="" class="form-select" required v-model="formData.titre">
                                 <option value="-">Choisir un type</option>
                                 <option value="Attestation de travail">Attestation de travail</option>
                                 <option value="Attestation de stage">Attestation de stage</option>
@@ -68,7 +72,7 @@ const submit = async () => {
                             </select>
                         </div>
                     </div>
-                    <div v-if="formData.title === 'Autre'" class="col-sm-12">
+                    <div v-if="formData.titre === 'Autre'" class="col-sm-12">
                         <div class="mb-3">
                             <label for="nameEx" class="form-label">Titre d'attestation <span
                                     class="text-danger">*</span></label>
@@ -78,10 +82,10 @@ const submit = async () => {
                     </div>
                     <div class="col-sm-12">
                         <div class="mb-3">
-                            <label for="assurance" class="form-label">Description <span
+                            <label for="assurance" class="form-label">Raison <span
                                     class="text-danger">*</span></label>
                             <textarea class="form-control" placeholder="Entrez la description du poste" tabindex="0"
-                                id="assurance" v-model="formData.description" required></textarea>
+                                id="assurance" v-model="formData.raison" required></textarea>
                         </div>
                     </div>
                 </div>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { DataTable } from '@/ui';
-import { formater, exportToExcel } from '@/utils';
-import { useRhStore } from '@/store';
+import { formater } from '@/utils';
+import { useHrStore } from '@/store';
 
 const props = defineProps({
     demandes: {
@@ -10,7 +10,7 @@ const props = defineProps({
         required: true,
     },
 });
-const rhStore = useRhStore();
+const rhStore = useHrStore();
 const headers = [
     { text: 'Employe', value: 'employe', isComplex: true, type: 'leave' },
     { text: 'Titre', value: 'titre', type: 'text' },
@@ -25,7 +25,7 @@ const actionsConfig = [
 ];
 
 const detailsItem = (item: any) => {
-    rhStore.Item = item;
+    rhStore.setItem(item);    
     $('#showDemandeRh').modal('show');
 };
 
@@ -63,9 +63,6 @@ const filter = () => {
 
 };
 
-const exportData = () => {
-    exportToExcel(filteredData.value);
-};
 
 </script>
 <template>
@@ -103,7 +100,7 @@ const exportData = () => {
                             <option value="60">60</option>
                         </select>
                     </div>
-                    <button class="btn btn-success" @click="exportData">
+                    <button class="btn btn-success">
                         <i class="ti ti-file-type-csv me-2"></i>
                         Exporter
                     </button>

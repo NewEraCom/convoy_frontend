@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Modal } from '@/ui';
-import { useRhStore } from '@/store';
+import { useHrStore } from '@/store';
 import { helpers } from '@/utils';
-import { rhService } from '@/services';
+import { paieService } from '@/services/v2';
+import { Validate } from '.';
 
-const rhStore = useRhStore();
+const rhStore = useHrStore();
 
 const isLoading = ref(false);
 
@@ -19,43 +20,38 @@ const formData = ref({
     approval_rh: null,
 });
 
-watch(() => rhStore.salaryAdvanceSelected, () => {
-    if (rhStore.salaryAdvanceSelected) {
-        formData.value.employee_id = rhStore.salaryAdvanceSelected.employe.id;
-        formData.value.employee = rhStore.salaryAdvanceSelected.employe.first_name + ' ' + rhStore.salaryAdvanceSelected.employe.last_name;
-        formData.value.avance = rhStore.salaryAdvanceSelected.avance;
-        formData.value.deduction = rhStore.salaryAdvanceSelected.deduction;
-        formData.value.date_start = rhStore.salaryAdvanceSelected.start_payment;
-        formData.value.status = rhStore.salaryAdvanceSelected.status;
-        formData.value.approval_rh = rhStore.salaryAdvanceSelected.approval_rh;
+const data = { approval_rh:''};
+const changeStatus=(stat)=>{
+    data.approval_rh = stat;
+};
+watch(() => rhStore.Item, () => {
+    if (rhStore.Item) {
+        formData.value.employee_id = rhStore.Item.employee.id;
+        formData.value.employee = rhStore.Item.employee.first_name + ' ' + rhStore.Item.employee.last_name;
+        formData.value.avance = rhStore.Item.avance;
+        formData.value.deduction = rhStore.Item.deduction;
+        formData.value.date_start = rhStore.Item.start_payment;
+        formData.value.status = rhStore.Item.status;
+        formData.value.approval_rh = rhStore.Item.approval_rh;
     }
 });
-
 const submit = async () => {
-    isLoading.value = true;
-    if (formData.value.employee_id === '-' || formData.value.employee === null || formData.value.avance === null || 
-    formData.value.deduction === null || formData.value.date_start === null || formData.value.status === null || 
-    formData.value.approval_rh === null ) {
-        isLoading.value = false;
-        return;
-    }
-    const data = { status: 1,};
-    await rhService.validateAvavnce(rhStore.salaryAdvanceSelected.id,data).then(() => {
-        console.log('Employee added');
-        rhStore.salaryAdvanceSelected = null;
-        $('#showSalaryAdvance').modal('hide');
+    if (formData.value.approval_rh!='approved') {
+    await paieService.validateSalaryAdvance(rhStore.Item.id,data).then(() => {
+        rhStore.Item = null;
+        data.approval_rh == 'rejected' ? $('#reject-modal').modal('hide') : $('#validate-modal').modal('hide');
     }).catch((error) => {
         console.error('Error during action execution', error);
     }).finally(() => {
         isLoading.value = false;
     });
+}
 };
 
 
 </script>
 <template>
     <Modal id="showSalaryAdvance" title="Details de l'avance sur salaire" size="modal-md">
-        <form @submit.prevent="submit" enctype="multipart/form-data">
             <div class="modal-body">
                 <div class="row">
                     <div v-if="formData.employee" class="col-sm-12">
@@ -97,18 +93,18 @@ const submit = async () => {
                         <div class="mb-3">
                             <label for="date_start" class="form-label">Status</label>
                             <span class="d-flex fw-bold align-items-center badge badge-pill" style=" height: 40px;"
-                                :class="helpers.returnBadge(String(formData.status))[0]">
-                                {{ helpers.returnBadge(String(formData.status))[1] }}
+                                :class="helpers.returnBadge(String(formData.approval_rh))[0]">
+                                {{ helpers.returnBadge(String(formData.approval_rh))[1] }}
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-label-outline-dark" data-bs-dismiss="modal">
-                    Fermer
-                </button>
-                <button v-if="formData.approval_rh == '0'" type="submit" :disabled="isLoading" class="btn btn-success">
+                
+                <button v-if="formData.approval_rh == 'pending'" 
+                :disabled="isLoading" class="btn btn-success" @click="changeStatus('approved')"
+                data-bs-target="#validate-modal" data-bs-toggle="modal">
                     <span v-if="isLoading" class="d-flex align-items-center">
                         <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -117,7 +113,21 @@ const submit = async () => {
                     </span>
                     <span v-else> Valider </span>
                 </button>
+                <button v-if="formData.approval_rh == 'pending'" 
+                :disabled="isLoading" class="btn btn-danger" @click="changeStatus('rejected')"
+                data-bs-target="#reject-modal" data-bs-toggle="modal">
+                    <span v-if="isLoading" class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        Chargement...
+                    </span>
+                    <span v-else> Rejeter </span>
+                </button>
             </div>
-        </form>
     </Modal>
+    <Validate id="validate-modal" :isLoading="isLoading" :method="submit" 
+      title="Valider Avance" message="Êtes-vous sûr de valider cet avance" severity="success" />
+    <Validate id="reject-modal" :isLoading="isLoading" :method="submit" 
+      title="Rejeter Avance" message="Êtes-vous sûr de rejeter cet avance" severity="danger" />
 </template>

@@ -130,13 +130,7 @@ const RHMenu = [
         icon: 'ti ti-users-group',
         path: 'Interns'
     },
-    {
-        id: 5,
-        name: 'Soustraitant',
-        route: '/rh-soustraitant',
-        icon: 'ti ti-settings',
-        path: 'RhSoustraitant'
-    },
+    
     {
         id: 6,
         name: 'Congés',
@@ -144,17 +138,10 @@ const RHMenu = [
         icon: 'ti ti-plane-inflight',
         path: 'Leaves'
     },
-    /* {
-        id: 7,
-        name: 'Documents',
-        route: '/documents',
-        icon: 'ti ti-files',
-        path: 'DocumentsRH'
-    }, */
     {
         id: 5,
         name: 'Decaissement',
-        route: '/caisse',
+        route: '/decaissement',
         icon: 'ti ti-cash',
         path: 'Caisse'
     },
@@ -186,13 +173,13 @@ const RHMenu = [
           icon: 'ti ti-file-stack',
           path: 'Contracts',
       }, */
-    {
-        id: 11,
-        name: 'Paie',
-        route: '/paie',
-        icon: 'ti ti-businessplan',
-        path: 'Paie'
-    },
+    // {
+    //     id: 11,
+    //     name: 'Paie',
+    //     route: '/paie',
+    //     icon: 'ti ti-businessplan',
+    //     path: 'Paie'
+    // },
     {
         id: 12,
         name: 'Avance sur salaire',

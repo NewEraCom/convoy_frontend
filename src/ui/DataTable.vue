@@ -101,10 +101,15 @@ function getIcon(item, action) {
     }
 function getClass(item, action) {
       if (action.type === 'delete') {
-        return item.status === this.disabled ? (typeof action.class === 'function' ? action.class(item) : action.class) : 'btn btn-secondary btn-sm';
+        return item.status === this.disabled  ?'btn btn-secondary btn-sm': action.class;
       }
       return typeof action.class === 'function' ? action.class(item) : action.class;
     }
+    const getFileUrl = (attachment) => {
+    console.log(attachment);
+
+    return helpers.baseUrl() + `uploads/${attachment}`;
+};
 </script>
 
 <template>
@@ -222,6 +227,13 @@ function getClass(item, action) {
                                         item[header.value] + 'Jour'
                                     }}
                                 </span>
+                                <span v-if="header.type === 'attachement'">
+                                    <small v-if="item[header.value] == '-' || item[header.value] == null">Aucun Attachement</small>
+                                    <a v-else class="btn btn-label-primary btn-sm" target="_blank"
+                                        :href="getFileUrl(item[header.value])">
+                                        <i class="ti ti-download me-2"></i> Télécharger l'attachement
+                                    </a>
+                                </span>
 
                         </td>
                         <td class="text-center" v-if="header.isComplex && header.type === 'date_echantillion'">
@@ -273,6 +285,12 @@ function getClass(item, action) {
                             <h6 class="mb-1 fw-bold">{{ item.created_by.employee.first_name + ' '
                         + item.created_by.employee.last_name }}</h6>
                         </td>
+                        <td v-if="header.isComplex && header.type === 'recepteur'"
+                            :class="index == 0 ? 'text-start' : 'text-center'">
+
+                            <h6 class="mb-1 fw-bold">{{ item.recepteur.first_name + ' '
+                        + item.recepteur.last_name }}</h6>
+                        </td>
 
 
 
@@ -280,16 +298,16 @@ function getClass(item, action) {
 
                     <td v-if="buttonType == 'simple'" class="text-center">
                         <button
-          v-for="action in actionsConfig"
-          :key="action.text"
-          :class="[getClass(item, action), 'me-2']"
-          @click="() => action.onClick(item)"
-          :disabled="action.type === 'delete' ? (item.status !== disabled) : false"
-        >
-          <i v-if="action.type === 'potential'"
-             :class="item.potentiel === '1' ? 'ti ti-bookmark-filled' : 'ti ti-bookmark'"></i>
-          <i v-else :class="getIcon(item, action)"></i>
-        </button>
+                        v-for="action in actionsConfig"
+                        :key="action.text"
+                        :class="[getClass(item, action), 'me-2']"
+                        @click="() => action.onClick(item)"
+                        :disabled="action.type === 'delete' ? (item.status !== disabled) : false"
+                        >
+                        <i v-if="action.type === 'potential'"
+                            :class="item.potentiel === '1' ? 'ti ti-bookmark-filled' : 'ti ti-bookmark'"></i>
+                        <i v-else :class="getIcon(item, action)"></i>
+                        </button>
                     </td>
                     <td v-else class="text-center">
                         <div class="dropdown" v-if="actionsConfig.length > 0">

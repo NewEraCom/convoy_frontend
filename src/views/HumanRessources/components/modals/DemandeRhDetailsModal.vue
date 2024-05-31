@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Modal } from '@/ui';
-import { useRhStore } from '@/store';
+import { useHrStore } from '@/store';
 import { helpers } from '@/utils';
 
-const rhStore = useRhStore();
+const rhStore = useHrStore();
 
 const isLoading = ref(false);
 
@@ -18,8 +18,8 @@ const formData = ref({
 
 watch(() => rhStore.Item, () => {
     if (rhStore.Item) {
-        formData.value.employee_id = rhStore.Item.employe.id;
-        formData.value.employee = rhStore.Item.employe.first_name + ' ' + rhStore.Item.employe.last_name;
+        formData.value.employee_id = rhStore.Item.employee.id;
+        formData.value.employee = rhStore.Item.employee.first_name + ' ' + rhStore.Item.employee.last_name;
         formData.value.titre = rhStore.Item.titre;
         formData.value.status = rhStore.Item.status;
         formData.value.raison = rhStore.Item.raison;
@@ -28,36 +28,18 @@ watch(() => rhStore.Item, () => {
 });
 
 // const submit = async () => {
-//     isLoading.value = true;
-//     if (formData.value.employee_id === '-' || formData.value.employee === null || formData.value.avance === null || 
-//     formData.value.deduction === null || formData.value.date_start === null || formData.value.status === null || 
-//     formData.value.approval_rh === null ) {
-//         isLoading.value = false;
-//         return;
-//     }
-//     const data = { status: 1,};
-//     await rhService.validateAvavnce(rhStore.salaryAdvanceSelected.id,data).then(() => {
-//         console.log('Employee added');
-//         rhStore.salaryAdvanceSelected = null;
-//         $('#showSalaryAdvance').modal('hide');
-//     }).catch((error) => {
-//         console.error('Error during action execution', error);
-//     }).finally(() => {
-//         isLoading.value = false;
-//     });
-// };
+
 
 
 </script>
 <template>
     <Modal id="showDemandeRh" title="Details de l'avance sur salaire" size="modal-md">
-        <form @submit.prevent="submit" enctype="multipart/form-data">
             <div class="modal-body">
                 <div class="row">
                     <div v-if="formData.employee" class="col-sm-6">
                         <div class="mb-3">
                             <label for="avance" class="form-label">Employé <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" placeholder="Entrez le total des salaires" tabindex="0"
+                            <input class="form-control" type="text" placeholder="Nom d'employee" tabindex="0"
                                 id="avance" v-model="formData.employee" disabled>
                         </div>
                     </div>
@@ -66,7 +48,7 @@ watch(() => rhStore.Item, () => {
                         <div class="mb-3">
                             <label for="avance" class="form-label">Titre <span
                                     class="text-danger">*</span></label>
-                            <input class="form-control" type="text" placeholder="Entrez le total des salaires"
+                            <input class="form-control" type="text" placeholder="Titre"
                                 tabindex="0" id="avance" v-model="formData.titre" disabled>
                         </div>
                     </div>
@@ -106,6 +88,5 @@ watch(() => rhStore.Item, () => {
                     <span v-else> Valider </span>
                 </button> -->
             </div>
-        </form>
     </Modal>
 </template>

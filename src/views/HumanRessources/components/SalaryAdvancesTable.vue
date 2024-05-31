@@ -2,8 +2,8 @@
 import { ref } from 'vue';
 import { DataTable } from '@/ui';
 import { formater, helpers } from '@/utils';
-import { useRhStore } from '@/store';
-const rhStore = useRhStore();
+import { useHrStore } from '@/store';
+const rhStore = useHrStore();
 
 const props = defineProps({
     salaryAdvances: {
@@ -16,24 +16,30 @@ const headers = [
     { text: 'Employe', value: 'employe', isComplex: true, type: 'leave' },
     { text: 'Montant avance', value: 'avance', type: 'currency' },
     { text: 'Montant restant', value: 'restant', type: 'currency' },
-    { text: 'Status', value: 'status', type: 'badge' },
+    { text: 'Pat', value: 'deduction', type: 'currency' },
+    { text: 'Status', value: 'approval_rh', type: 'badge' },
     { text: 'Date de debut', value: 'start_payment', type: 'date' },
     { text: 'Date de fin', value: 'end_payment', type: 'date' },
 ];
 
 const actionsConfig = [
     { icon: 'ti ti-eye', class: 'btn btn-primary btn-sm', onClick: (item: any) => detailsItem(item) },
-    { icon: 'ti ti-trash-filled', type: 'delete', class: 'btn btn-danger btn-sm', onClick: (item: any) => deleteItem(item) },
+    { icon: 'ti ti-trash-filled', class: 'btn btn-danger btn-sm', onClick: (item: any) => deleteItem(item) },
+    { icon: 'ti ti-pencil', class: 'btn btn-warning btn-sm', onClick: (item: any) => editItem(item) },
 ];
 
 const detailsItem = (item: any) => {
-    rhStore.salaryAdvanceSelected = item;
+    rhStore.setItem(item);
     $('#showSalaryAdvance').modal('show');
+};
+const editItem = (item: any) => {
+    rhStore.setItem(item);
+    $('#editSalaryAdvance').modal('show');
 };
 
 
 const deleteItem = (item: any) => {
-    helpers.setDeleteId(item.id);
+    rhStore.setItemId(item.id);
     $('#deleteModal').modal('show');
 };
 
@@ -47,10 +53,10 @@ const itemPerPage = ref(15);
 
 const filter = () => {
     filteredData.value = props.salaryAdvances.filter((item: any) => {
-        const combinedFields = `${item.employe.last_name} ${item.employe.first_name}`.toLowerCase();
+        const combinedFields = `${item.employee.last_name} ${item.employee.first_name}`.toLowerCase();
         const searchWords = searchQuery.value.toLowerCase().split(' ');
         return searchWords.every(word => combinedFields.includes(word)) &&
-            (statusQuery.value === '-' || item.status === statusQuery.value) && (!startQuery.value || formater.startOfDay(item.start_payment) >= formater.startOfDay(startQuery.value)) &&
+            (statusQuery.value === '-' || item.approval_rh === statusQuery.value) && (!startQuery.value || formater.startOfDay(item.start_payment) >= formater.startOfDay(startQuery.value)) &&
             (!endQuery.value || formater.startOfDay(item.end_payment) <= formater.startOfDay(endQuery.value));
     });
 };
@@ -98,7 +104,7 @@ const filter = () => {
             </div>
         </div>
         <DataTable :items="filteredData" :headers="headers" :page-size=itemPerPage :actionsConfig="actionsConfig"
-            button-type="simple" disabled="pending" />
+            button-type="simple"  />
     </div>
 </template>
 <style>

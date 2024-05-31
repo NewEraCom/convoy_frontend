@@ -6,7 +6,7 @@ const createEvent = async (data: any) => {
     try {
         const response = await api().post('/event', data);
         const sharedStore = useSharedStore();
-        if(response.status){
+        if(response.status ===200){
             sharedStore.addEvents(response.data.event);
             return response;
         }

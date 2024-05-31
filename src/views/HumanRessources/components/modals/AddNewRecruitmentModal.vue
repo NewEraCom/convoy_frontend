@@ -1,17 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Modal } from '@/ui';
-import { sharedService } from '@/services';
+import { recrutementService } from '@/services/v2';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
-
-const props = defineProps({
-    from: {
-        type: String,
-        default: 'rh'
-    }
-});
 
 const isLoading = ref(false);
 
@@ -26,7 +19,7 @@ const formData = ref({
 const submit = async () => {
     isLoading.value = true;
 
-    await sharedService.addNewRecruitment(formData.value, props.from).then(() => {
+    await recrutementService.addNewRecruitment(formData.value).then(() => {
         isLoading.value = false;
         $('#addNewRecruitment').modal('hide');
         toast.success('Demande de recrutement ajoutée avec succès');
