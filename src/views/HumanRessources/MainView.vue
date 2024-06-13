@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 import { RHStatsCard, EmployeeChart } from './components';
 
-import { employeeService } from '@/services/v2/human_ressource';
+import { demandeService, employeeService } from '@/services/v2/human_ressource';
 import { useHrStore } from '@/store/v2';
 import { formater } from '@/utils';
 import { CardOneSkeleton } from '@/ui';
@@ -12,13 +12,13 @@ const RhStore = useHrStore();
 
 
 const stats = ref(computed(() => RhStore.stats));
-const demandeRh = ref(0);
+const demandeRh = ref(computed(() => RhStore.demandeRh.stats));
 
 const employeeExpire = ref(computed(() => RhStore.employeeExpire));
 
 onMounted(async () => {
   await employeeService.getEmployees();
-  // await employeeService.getDemandeRh();
+  await demandeService.getDemandeRh();
 });
 
 onUnmounted(() => {

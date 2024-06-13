@@ -107,7 +107,7 @@ const DeleteDoc = async () => {
                                 </li>
                                 <li class="mb-2 pt-1">
                                     <span class="fw-medium me-1">Date de naissance:</span>
-                                    <span>{{ formater.date(employee.birthdate) }}</span>
+                                    <span>{{ formater.date(employee.date_of_birth) }}</span>
                                 </li>
                                 <li class="mb-2 pt-1">
                                     <span class="fw-medium me-1">Poste:</span>
@@ -144,11 +144,11 @@ const DeleteDoc = async () => {
                                 </li>
                                 <li class="mb-2 pt-1">
                                     <span class="fw-medium me-1">Ville:</span>
-                                    <span>{{ employee.ville }}</span>
+                                    <span>{{ employee.city }}</span>
                                 </li>
                                 <li class="mb-2 pt-1">
                                     <span class="fw-medium me-1">Adresse:</span>
-                                    <span>{{ employee.adresse }}</span>
+                                    <span>{{ employee.address }}</span>
                                 </li>
                             </ul>
                         </div>

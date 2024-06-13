@@ -10,7 +10,12 @@ export const useProductionStore = defineStore('ProductionStore', {
         selectedPreProject: null,
         caisseSum: null,
         caisseList: null,
-        error: false
+        error: false,
+        purchaseOrders:{
+            data:null,
+            stats:null,
+            chart:null
+        }
     }),
     actions: {
         setPreProjectsList(data) {
@@ -18,7 +23,7 @@ export const useProductionStore = defineStore('ProductionStore', {
             this.preProjectsStats = {
                 waiting: data.filter(item => item.status === 'pending').length,
                 inProgress: data.filter(item => item.status === 'En soumission').length,
-                completed: data.filter(item => item.status === 'Gagné').length,
+                not_delivered: data.filter(item => item.status === 'Gagné').length,
                 lost: data.filter(item => item.status === 'Perdu').length
             };
         },
@@ -45,6 +50,33 @@ export const useProductionStore = defineStore('ProductionStore', {
         },
         setError() {
             this.error = true;
-        }
+        },
+        setDashboardData(data: any) {
+            this.projectsStats = data;
+        },
+        clearStats() {
+            this.projectsStats = null;
+        },
+        setPurchaseOrders(purchases: any) {
+            this.purchaseOrders.data = purchases;
+            this.purchaseOrders.stats = {
+                total: purchases.length,
+                pending: purchases.filter((p: any) => p.status === 'pending').length,
+                traited: purchases.filter((p: any) => p.status === 'traited').length,
+                rejected: purchases.filter((p: any) => p.status === 'rejected').length,
+                approved: purchases.filter((p: any) => p.status === 'approved').length,
+                for_delivery: purchases.filter((p: any) => p.status === 'for_delivery').length,
+                delivered: purchases.filter((p: any) => p.status === 'delivered').length,
+                delivered_partially: purchases.filter((p: any) => p.status === 'delivered_partially').length,
+                not_delivered: purchases.filter((p: any) => p.status === 'not_delivered').length,
+            };
+            console.log(this.purchaseOrders);
+            
+        },
+        clearPurchaseOrders() {
+            this.purchaseOrders.data = null;
+            this.purchaseOrders.stats = null;
+            this.purchaseOrders.chart = null;
+        },
     }
 });

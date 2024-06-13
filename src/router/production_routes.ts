@@ -45,5 +45,14 @@ export const productionRoutes = [
         meta: {
             title: 'Budget Caisse',
         },
+    },
+    {
+        path: '/production/PMDashboard',
+        name: 'DashboardPM',
+        component: () => import('@/views/Production/PMMainView.vue'),
+        meta: {
+            title: 'Dashboard',
+            role: [helpers.roles.CF, helpers.roles.DO]
+        },
     }
 ];

@@ -42,8 +42,8 @@ const DGMenu = [
 const CFMenu = [
     {
         id: 1,
-        name: 'Dashboard',
-        route: '/dashboard-pm',
+        name: 'DashboardPM',
+        route: '/production/PMDashboard',
         icon: 'ti ti-smart-home',
         path: 'DashboardPM'
     },

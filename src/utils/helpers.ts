@@ -35,7 +35,7 @@ const roles = {
 	DEV: 'Dev',
 	SALES: 'Sales',
 	BDM: 'Director Business Development',
-	CF: 'Chef de projet',
+	CF: 'Project Manager',
 	RH: 'Human Resource',
 	LOGISTICS: 'Logistics',
 	DG: 'Directeur general',
@@ -185,6 +185,14 @@ const returnBadge = (item: any): any[] => {
 			return ['badge bg-primary', 'Sans Lots'];
 		case 'special':
 			return ['badge bg-success', 'Avec Lots'];
+		case 'traited':
+			return ['badge bg-success', 'traitée'];
+		case 'for_delivery':
+			return ['badge bg-success', 'Livraison'];
+		case 'delivered_partially':
+			return ['badge bg-success', 'Livrée partiellement'];
+		case 'not_delivered':
+			return ['badge bg-success', 'non Livrée'];
 		case 'En attente':
 			return [' badge bg-label-warning', 'En attente', 'ti-clock'];
 		case 'En soumission':
